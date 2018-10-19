@@ -1,6 +1,6 @@
 {
     "name": "@softwaresecurednpm/npm_plugin",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "description": "Dependency checker and issue reporter",
     "license": "MIT",
     "repository": "softwaresecured/npm_plugin",
@@ -10,5 +10,10 @@
         "npm",
         "dependency",
         "vulnerability"
-    ]
+    ],
+    "scripts": {
+        "start": "node index.js",
+        "say-hello": "echo 'Hello World!'"
+    },
+    "dependencies": {}
 }
