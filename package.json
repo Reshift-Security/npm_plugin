@@ -15,5 +15,8 @@
         "start": "node index.js",
         "say-hello": "echo 'Hello World!'"
     },
-    "dependencies": {}
+    "dependencies": {
+        "eslint": "^5.7.0",
+        "get-dependencies": "^1.1.0"
+    }
 }
