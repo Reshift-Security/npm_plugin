@@ -2,15 +2,34 @@
 const Common = require('./common.js');
 const Vcs    = require('./vcs.js');
 const Files  = require('./file.js');
+const ArgumentParser = require('argparse').ArgumentParser;
 
 
-const [,, ...args] = process.argv;
+const parser = new ArgumentParser({
+    version: '1.0.4',
+    addHelp:true,
+    description: 'NPM security plugin'
+});
+parser.addArgument(
+    [ '-t', '--token' ],
+    {
+        help: 'Token used to identify report provider.'
+    }
+);
+parser.addArgument(
+    [ '-o', '--output_path' ],
+    {
+        help: 'Output file absolute path [optional]'
+    }
+);
+
+const args = parser.parseArgs();
 
 
 /*
     AUDITSTR   := newType('AUDITSTR', string)
     description : function to execute 'npm audit' if 'package.json' in the dir.
-    requires    : None
+    requires    : root,
     return:     : Optional[AUDITSTR]
 */
 function runAudit(){
@@ -92,24 +111,34 @@ function sendResult(token, result){
     return:     : Optional[CAPNP]
 */
 function main(token, isSend = true){
+    if (args['token'] == null){
+        console.log('INFO - System exit since no token provided.');
+        console.log('INFO - example: \'node main.js token:<token> [Optional]root_path:<path> [Optional]output_path:<path>\'')
+        return null;
+    }
+
+    var token = args['token'];
     var start = new Date().toString();
-    var data  = runAudit();
+    var data  = runAudit(root);
 
     if (data == null){
         console.log('INFO - System exit since no project found.');
         return null;
     };
 
-    result  = processResult(data, start);
+    result  = processResult(data, start, root);
     var end = new Date().toString();
     result['Date']['end'] = end;
     console.log(JSON.stringify(result))
 
-    if (isSend == true){
+    if (args['output_path'] == null){
         sendResult(token, result)
         return null;
     }
-    else return result;
+    else{
+        Files.saveResult(args['output_path'], result)
+        return result;
+    }
 };
 
 

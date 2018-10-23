@@ -59,5 +59,22 @@ module.exports = {
     */
     loadPackage: function(file_path){
         return JSON.parse(fs.readFileSync(file_path, 'utf8'));
+    },
+
+
+    /*
+        description : load base package json
+        requires    : file_path -> str,
+                      result    -> JSON
+        returns     : None
+    */
+    saveResult: function(file_path, result){
+        fs.writeFile(file_path, JSON.stringify(result), function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("INFO - The file was saved!");
+        });
     }
 };

@@ -16,6 +16,7 @@
         "say-hello": "echo 'Hello World!'"
     },
     "dependencies": {
+        "argparse": "^1.0.10",
         "eslint": "^5.7.0",
         "get-dependencies": "^1.1.0"
     }
