@@ -128,7 +128,7 @@ function processResult(data, start){
 function main(token, isSend = true){
     if (args['token'] == null){
         console.log('INFO - System exit since no token provided.');
-        console.log('INFO - example: \'node main.js token:<token> [Optional]root_path:<path> [Optional]output_path:<path>\'')
+        console.log('INFO - Use \'-h\' argument to see help.')
         return null;
     }
 
