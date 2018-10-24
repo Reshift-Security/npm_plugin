@@ -2,6 +2,8 @@
 const Common = require('./common.js');
 const Vcs    = require('./vcs.js');
 const Files  = require('./file.js');
+const Transport = require('./transport.js');
+
 const ArgumentParser = require('argparse').ArgumentParser;
 
 
@@ -22,7 +24,18 @@ parser.addArgument(
         help: 'Output file absolute path [optional]'
     }
 );
-
+parser.addArgument(
+    [ '-p', '--port' ],
+    {
+        help: 'Port to be used to transport report to reshift (443 by default) [optional]'
+    }
+);
+parser.addArgument(
+    [ '-u', '--host' ],
+    {
+        help: 'Host to be used to transport report to (\'reshift.softwaresecured.com\' by default)  [optional]'
+    }
+);
 const args = parser.parseArgs();
 
 
@@ -97,11 +110,6 @@ function processResult(data, start){
 }
 
 
-function sendResult(token, result){
-
-}
-
-
 /*
     TOKEN      := newType('TOKEN', string)
     CAPNP      := newType('CAPNP', bytes)
@@ -129,10 +137,9 @@ function main(token, isSend = true){
     result  = processResult(data, start, root);
     var end = new Date().toString();
     result['Date']['end'] = end;
-    console.log(JSON.stringify(result))
 
     if (args['output_path'] == null){
-        sendResult(token, result)
+        Transport.sendResult(token, result, args['host'], args['port'])
         return null;
     }
     else{

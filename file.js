@@ -69,12 +69,7 @@ module.exports = {
         returns     : None
     */
     saveResult: function(file_path, result){
-        fs.writeFile(file_path, JSON.stringify(result), function(err) {
-            if(err) {
-                return console.log(err);
-            }
-
-            console.log("INFO - The file was saved!");
-        });
+        fs.writeFileSync(file_path, JSON.stringify(result));
+        console.log("INFO - Created temp file for created report.");
     }
 };
