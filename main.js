@@ -62,6 +62,13 @@ function runAudit(){
 };
 
 
+/*
+    STARTTIME   := newType('STARTTIME', str)
+    description : function to create a bundle data
+    requires    : data     -> JSON,
+                  start    -> STARTTIME
+    returns     : JSON
+*/
 function processResult(data, start){
     // get host name, parse raw data
     var host_name = Common.systemSync('hostname')
