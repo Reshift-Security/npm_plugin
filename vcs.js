@@ -1,4 +1,4 @@
-const Common = require('./common.js');
+const Common   = require('./common.js');
 
 
 module.exports = {
@@ -8,9 +8,9 @@ module.exports = {
         requires    : None
         returns     : Optional[HASHSTR]
     */
-    getHash: function() {
+    getHash: function(root_path) {
         try{
-            var git_hash = Common.systemSync('git rev-parse HEAD');
+            var git_hash = Common.systemSync('git rev-parse HEAD', root_path);
             return git_hash;
         }
         catch(error){
@@ -25,9 +25,9 @@ module.exports = {
         requires    : None
         returns     : Optional[str]
     */
-    getURL: function() {
+    getURL: function(root_path) {
         try{
-            var git_url = Common.systemSync('git config --get remote.origin.url');
+            var git_url = Common.systemSync('git config --get remote.origin.url', root_path);
             return git_url;
         }
         catch(error){
@@ -43,9 +43,9 @@ module.exports = {
         requires    : None
         returns     : Optional[str]
     */
-    getProject: function() {
+    getProject: function(root_path) {
         try{
-            var project_name = Common.systemSync('basename \`git rev-parse --show-toplevel\`');
+            var project_name = Common.systemSync('basename \`git rev-parse --show-toplevel\`', root_path);
             return project_name;
         }
         catch(error){
@@ -62,7 +62,7 @@ module.exports = {
     */
     getBlame: function(root_path) {
         try{
-            var blame_info = Common.systemSync('git blame ' + root_path + '/package.json');
+            var blame_info = Common.systemSync('git blame -l ' + root_path + '/package.json', root_path);
             return blame_info;
         }
         catch(error){
@@ -94,7 +94,6 @@ module.exports = {
                 i++;
             }
         }
-
         return result
     }
 };

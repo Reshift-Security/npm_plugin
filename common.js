@@ -5,10 +5,14 @@
     returns     : Optional[STDOUTSTR]
 */
 module.exports = {
-    systemSync: function(cmd) {
+    systemSync: function(cmd, root_path) {
         child_process = require('child_process');
         try {
-            return child_process.execSync(cmd).toString();
+            return child_process.execSync(cmd,
+                    {
+                        cwd: root_path
+                    }
+                ).toString();
         }
         catch (error) {
             // HACK - stupid npm exit 1 if contains vulnerability, check stderr first

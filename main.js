@@ -1,11 +1,11 @@
 #!/user/bin/node
-const Common = require('./common.js');
-const Vcs    = require('./vcs.js');
-const Files  = require('./file.js');
+const Common    = require('./common.js');
+const Vcs       = require('./vcs.js');
+const Files     = require('./file.js');
 const Transport = require('./transport.js');
 
 const ArgumentParser = require('argparse').ArgumentParser;
-
+const Path           = require('path');
 
 const parser = new ArgumentParser({
     version: '1.0.4',
@@ -42,18 +42,18 @@ const args = parser.parseArgs();
 /*
     AUDITSTR   := newType('AUDITSTR', string)
     description : function to execute 'npm audit' if 'package.json' in the dir.
-    requires    : root,
+    requires    : None,
     return:     : Optional[AUDITSTR]
 */
-function runAudit(){
-    var data = Common.systemSync('ls');
+function runAudit(root_path){
+    var data = Common.systemSync('ls', root_path);
     if (data.includes('package.json')) {
         // if lock not in the package, we need to create one.
         if (! data.includes('package-lock.json')){
             console.log('INFO - Creating locks for dependency checker.');
-            Common.systemSync('npm i --package-lock-only');
+            Common.systemSync('npm i --package-lock-only', root_path);
         }
-        return Common.systemSync('npm audit --json');
+        return Common.systemSync('npm audit --json', root_path);
     }
     else{
         console.log('INFO - Unable to locate base package information, are you sure package.json included?');
@@ -69,29 +69,28 @@ function runAudit(){
                   start    -> STARTTIME
     returns     : JSON
 */
-function processResult(data, start){
+function processResult(data, start, root_path){
     // get host name, parse raw data
     var host_name = Common.systemSync('hostname')
     var raw_data  = JSON.parse(data);
 
     // walk though root and get all the file name
     var root_json = {};
-    var root_path = Files.getCWD();
     Files.walkDir(root_path, root_json);
     var is_git    = Files.isGit(root_json);
 
     // get info related to git
     var git_hash  = null, proj_name = null, blame_inf = null, git_url = null;
     if (is_git){
-        git_hash  = Vcs.getHash();
-        proj_name = Vcs.getProject();
+        git_hash  = Vcs.getHash(root_path);
+        proj_name = Vcs.getProject(root_path);
         blame_inf = Vcs.getBlame(root_path);
-        git_url   = Vcs.getURL();
+        git_url   = Vcs.getURL(root_path);
     }
 
     // get dependency related, assume package.json at root
     var package   = Files.loadPackage(root_path + '/package.json');
-    var dep_lists = Object.keys(package).includes('dependencies') ? package.dependencies : null;
+    var dep_lists = Files.getDependencyList(package);
     var blm_lists = Vcs.parseBlm(blame_inf, dep_lists);
     // always ok for now, we need exception handler
     var status    = 0;
@@ -106,9 +105,10 @@ function processResult(data, start){
     project_meta['Project Name'] = proj_name;
     project_meta['Dependencies'] = dep_lists;
     project_meta['Absolute pth'] = root_path;
-    project_meta['Result Stats'] = status;
+    project_meta['Exit Code'] = status;
     project_meta['VCS Info']     = vcs_info;
     project_meta['File Info']    = root_json;
+    project_meta['Root']         = '.';
     vcs_info['Git Url']          = git_url;
     vcs_info['Git Hash']         = git_hash;
     vcs_info['blm_lists']        = blm_lists;
@@ -132,18 +132,21 @@ function main(token, isSend = true){
         return null;
     }
 
+    var root_path = Files.correctRoot(Files.getCWD());
+
     var token = args['token'];
-    var start = new Date().toString();
-    var data  = runAudit(root);
+    var start = new Date().getUTCDate();
+    var data  = runAudit(root_path);
 
     if (data == null){
         console.log('INFO - System exit since no project found.');
         return null;
     };
 
-    result  = processResult(data, start, root);
-    var end = new Date().toString();
-    result['Date']['end'] = end;
+    result  = processResult(data, start, root_path);
+
+    var end = new Date().getUTCDate();
+    result['Date']['End'] = end;
 
     if (args['output_path'] == null){
         Transport.sendResult(token, result, args['host'], args['port'])

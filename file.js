@@ -71,5 +71,35 @@ module.exports = {
     saveResult: function(file_path, result){
         fs.writeFileSync(file_path, JSON.stringify(result));
         console.log("INFO - Created temp file for created report.");
+    },
+
+
+    /*
+        description : get correct root directory
+        requires    : file_path -> str,
+        returns     : str
+    */
+    correctRoot: function(file_path){
+        if (file_path.includes('node_modules')){
+            end_index = file_path.indexOf('node_modules');
+            return file_path.slice(0, end_index);
+        }
+        return file_path
+    },
+
+    getDependencyList: function(package_json){
+        keys = Object.keys(package_json);
+        dependencies_base = keys.includes('dependencies') ? package_json.dependencies : null;
+        dependencies_dev  = keys.includes('devDependencies') ? package_json.devDependencies : null;
+
+        if (dependencies_base == null){
+            return dependencies_dev;
+        }
+        if (dependencies_dev == null){
+            return dependencies_base;
+        }
+        else{
+            return Object.assign(dependencies_base, dependencies_dev);
+        }
     }
 };
