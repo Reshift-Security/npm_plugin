@@ -18,5 +18,10 @@ module.exports = {
             // HACK - stupid npm exit 1 if contains vulnerability, check stderr first
             return (error.stderr.toString().length == 0) ? error.stdout.toString() : null
          }
+    },
+
+
+    get_npm: function(root_path){
+        return this.systemSync("npm -v", root_path)
     }
 };

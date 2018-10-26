@@ -133,10 +133,21 @@ function main(token, isSend = true){
     }
 
     var root_path = Files.correctRoot(Files.getCWD());
+    console.log("INFO - Verifying npm.")
+
+    var npm_ver  = Common.get_npm(root_path);
+    var ver_list = npm_ver.split('.')
+    if ((ver_list[0] + ver_list[1]) < 51){
+        console.log('INFO - System exit since npm version too low(below 5.2.0), please check your npm (local package will override global one).');
+        console.log('INFO - Local npm version:' + npm_ver)
+        return null;
+    };
 
     var token = args['token'];
     var start = new Date().getUTCDate();
     var data  = runAudit(root_path);
+
+    console.log("INFO - Creating dependency report.")
 
     if (data == null){
         console.log('INFO - System exit since no project found.');
