@@ -1,2 +1,2 @@
-# npm_plugin
-Plugin for generate report for javascript 
+# Reshift-NPM-Plugin
+*Your source code deserves more. Defend.*
