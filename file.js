@@ -42,12 +42,17 @@ module.exports = {
         root_json[dir] = [];
         fs.readdirSync(dir).forEach( f => {
             let dirPath = path.join(dir, f);
-            let isDirectory = fs.statSync(dirPath).isDirectory();
-            // check if this is a node_modules or .git folder
-            let isDepend    = dir.includes('node_modules') || dir.includes('.git');
-            // any walk to none depend folder (main) and add .js file
-            (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json) :
-                             ((this.isJS(f) && !isDepend) ? root_json[dir].push(f) : {})
+            // some project might contain broken linked files
+            try{
+                let isDirectory = fs.statSync(dirPath).isDirectory();
+                // check if this is a node_modules or .git folder
+                let isDepend    = dir.includes('node_modules') || dir.includes('.git');
+                // any walk to none depend folder (main) and add .js file
+                (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json) :
+                                ((this.isJS(f) && !isDepend) ? root_json[dir].push(f) : {})
+            }
+            catch(error){
+            }
         });
     },
 
