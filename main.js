@@ -156,6 +156,11 @@ function main(token, isSend = true){
 
     result  = processResult(data, start, root_path);
 
+    if (JSON.stringify(result).includes('Not Committed Yet')){
+        console.log('INFO - System exit since you have uncommitted contents.');
+        return null;
+    }
+
     var end = new Date().getUTCDate();
     result['Date']['End'] = end;
 
