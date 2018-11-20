@@ -1,6 +1,8 @@
 const fs = require('fs'), path = require('path');
 
 
+let is_git = false;
+
 module.exports = {
     /*
         description : get currenct wd
@@ -18,8 +20,7 @@ module.exports = {
         returns     : bool
     */
     isGit: function(root_json){
-        json_str = JSON.stringify(root_json);
-        return json_str.includes('.git')
+        return is_git;
     },
 
 
@@ -46,7 +47,8 @@ module.exports = {
             try{
                 let isDirectory = fs.statSync(dirPath).isDirectory();
                 // check if this is a node_modules or .git folder
-                let isDepend    = dir.includes('node_modules') || dir.includes('.git');
+                let isDepend    = dir.includes('node_modules') || dir.includes('.git') || dir.includes('.vscode');
+                if(dir.includes('.git')) { is_git = true;  }
                 // any walk to none depend folder (main) and add .js file
                 (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json) :
                                 ((this.isJS(f) && !isDepend) ? root_json[dir].push(f) : {})
@@ -54,6 +56,10 @@ module.exports = {
             catch(error){
             }
         });
+        // clean empty one, we care only existing one
+        if(root_json[dir].length === 0){
+            delete root_json[dir]
+        }
     },
 
 
