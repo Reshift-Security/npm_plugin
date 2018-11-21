@@ -104,8 +104,8 @@ module.exports = {
                 var column     = message['column'] === undefined ? 0 : message['column'];
                 var end_col    = message['endColumn'];
 
-                var instance_data = (start_line === end_line && end_line === 1) ? report['source'].slice(column, end_col):
-                                         source.slice(start_line, end_line).join('');
+                var instance_data = (start_line === end_line && end_line === 1) ? report['source'].slice(column, end_col).replace('\s', ''):
+                                         source.slice(start_line, end_line).join('').replace('\s', '');
                 message['instance hash'] = SJCL.codec.hex.fromBits(
                                                SJCL.hash.sha256.hash(git_hash + relative + instance_data));
 
