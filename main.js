@@ -81,7 +81,7 @@ function main(token, isSend = true){
 
     result  = Report.createReport(data, start, root_path, root_json);
 
-    if (JSON.stringify(result).includes('Not Committed Yet')){
+    if (JSON.stringify(result['Project']['Eslint Report']).includes('Not Committed Yet')){
         console.log('INFO - System exit since you have uncommitted contents.');
         return null;
     }
@@ -89,14 +89,14 @@ function main(token, isSend = true){
     var end = new Date().getUTCDate();
     result['Date']['End'] = end;
 
-    // if (args['output_path'] == null){
-    //     Transport.sendResult(token, result, args['host'], args['port'])
-    //     return null;
-    // }
-    // else{
-    //     Files.saveResult(args['output_path'], result)
-    //     return result;
-    // }
+    if (args['output_path'] == null){
+        Transport.sendResult(token, result, args['host'], args['port'])
+        return null;
+    }
+    else{
+        Files.saveResult(args['output_path'], result)
+        return result;
+    }
 };
 
 
