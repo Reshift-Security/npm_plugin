@@ -69,7 +69,7 @@ module.exports = {
             blame_info['package_json'] = Common.systemSync('git blame -l ' + root_path + '/package.json', root_path);
             Object.keys(root_json).forEach(path =>{
                 root_json[path].forEach( file => {
-                    blame_info[path + '/' + file] = Common.systemSync('git blame -l ' + path +  '/' + file, root_path);
+                    blame_info[path + file] = Common.systemSync('git blame -l ' + path + file, root_path);
                 });
             });
             return blame_info;

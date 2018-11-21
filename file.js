@@ -40,7 +40,7 @@ module.exports = {
         returns     : bool
     */
     walkDir: function(dir, root_json) {
-        root_json[dir] = [];
+        root_json[dir + '/'] = [];
         fs.readdirSync(dir).forEach( f => {
             let dirPath = path.join(dir, f);
             // some project might contain broken linked files
@@ -51,14 +51,14 @@ module.exports = {
                 if(dir.includes('.git')) { is_git = true;  }
                 // any walk to none depend folder (main) and add .js file
                 (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json) :
-                                ((this.isJS(f) && !isDepend) ? root_json[dir].push(f) : {})
+                                ((this.isJS(f) && !isDepend) ? root_json[dir + '/'].push(f) : {})
             }
             catch(error){
             }
         });
         // clean empty one, we care only existing one
-        if(root_json[dir].length === 0){
-            delete root_json[dir]
+        if(root_json[dir + '/'].length === 0){
+            delete root_json[dir + '/']
         }
     },
 

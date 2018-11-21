@@ -1,8 +1,8 @@
 const Common    = require('./common.js');
 const Vcs       = require('./vcs.js');
 const Files     = require('./file.js');
-const Ast       = require('./ast.js');
 
+const SJCL       = require("sjcl")
 const ESLint     = require("eslint");
 const ESprima    = require('esprima');
 const CLIEngine  = ESLint.CLIEngine;
@@ -37,7 +37,7 @@ module.exports = {
         requires: root_json -> JSON
         returns: Optional[JSON]
     */
-    runEslint: function(root_json, blame_inf){
+    runEslint: function(root_json){
         if(!root_json){
             return null;
         }
@@ -61,44 +61,60 @@ module.exports = {
                 "security/detect-pseudoRandomBytes": 2
             }
         });
-        var report     = cli.executeOnFiles(Object.keys(root_json));
+
+        // clearly eslint don't know how to search folder although they claim they are
+        target = []
+        Object.keys(root_json).forEach(key => {
+            root_json[key].forEach(file => {
+                target.push(key + file);
+            });
+        });
+
+        var report     = cli.executeOnFiles(target);
         var err_report = CLIEngine.getErrorResults(report.results);
-        return this.prepareReport(err_report, blame_inf)
+        return err_report
     },
 
 
-    _assignBlame: function(raw, report_store, start, end){
-        if(!raw){ report_store.push(null); return;}
+    _assignBlame: function(raw, message, start, end){
+        if(!raw){ message['blame'] = null; return;}
         var temp_store = [];
 
         raw_temp = raw.slice(start, end);
         raw_temp.forEach(blame => {
             temp_store.push(Vcs.genBlame(blame));
         });
-        report_store.push(temp_store);
+        message['blame'] = temp_store;
     },
 
 
-    prepareReport: function(err_reports, blame_inf){
+    prepareEslint: function(err_reports, blame_inf, root_path, git_hash){
         err_reports.forEach(report => {
-            f_path          = report['filePath'];
-            raw_blame       = blame_inf[f_path] ? (blame_inf[f_path]).split('\n') : null;
-            report['blame'] = []
-            source          = report['source'].split('\n');
-            raw_ast         = ESprima.parse(report['source'], {tolerant: true, loc: true})
+            f_path    = report['filePath'];
+            relative  = f_path.replace(root_path, '.');
+            raw_blame = blame_inf[f_path] ? (blame_inf[f_path]).split('\n') : null;
+            source    = report['source'].split('\n');
+
+            try{ raw_ast = ESprima.parse(report['source'], {tolerant: true, loc: true});}
+            catch(error){ raw_ast = null;}
 
             report['messages'].forEach(message =>{
                 var start_line = message['line'] - 1;    //since line count starts at 0
                 var end_line   = message['endLine'] === undefined ? message['line']: message['endLine'];
                 var column     = message['column'] === undefined ? 0 : message['column'];
                 var end_col    = message['endColumn'];
-                this._assignBlame(raw_blame, report['blame'], start_line, end_line);
-                Ast.findAst(raw_ast, start_line, end_line, column, end_col);
+
+                var instance_data = (start_line === end_line && end_line === 1) ? report['source'].slice(column, end_col):
+                                         source.slice(start_line, end_line).join('');
+                message['instance hash'] = SJCL.codec.hex.fromBits(
+                                               SJCL.hash.sha256.hash(git_hash + relative + instance_data));
+
+                this._assignBlame(raw_blame, message, start_line, end_line);
             });
 
             delete report['source'];
 
-            report['ast']   = raw_ast;
+            report['ast']      = raw_ast;
         });
         return err_reports
     },
@@ -132,7 +148,8 @@ module.exports = {
         var package   = Files.loadPackage(root_path + '/package.json');
         var dep_lists = Files.getDependencyList(package);
         var blm_lists = Vcs.parseBlm(blame_inf, dep_lists);
-        var es_data   = this.runEslint(root_json, blame_inf);
+        console.log("INFO - Execute security scanning.")
+        var es_data   = this.prepareEslint(this.runEslint(root_json), blame_inf, root_path, git_hash);
         // always ok for now, we need exception handler
         var status    = 0;
 
@@ -154,8 +171,6 @@ module.exports = {
         vcs_info['Git Url']          = git_url;
         vcs_info['Git Hash']         = git_hash;
         vcs_info['blm_lists']        = blm_lists;
-
-        console.log(JSON.stringify(bundle))
 
         return bundle;
     }
