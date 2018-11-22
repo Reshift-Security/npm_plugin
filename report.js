@@ -2,7 +2,7 @@ const Common    = require('./common.js');
 const Vcs       = require('./vcs.js');
 const Files     = require('./file.js');
 
-const SJCL       = require("sjcl")
+const MD5       = require("md5")
 const ESLint     = require("eslint");
 const ESprima    = require('esprima');
 const CLIEngine  = ESLint.CLIEngine;
@@ -106,8 +106,7 @@ module.exports = {
 
                 var instance_data = (start_line === end_line && end_line === 1) ? report['source'].slice(column, end_col).replace('\s', ''):
                                          source.slice(start_line, end_line).join('').replace('\s', '');
-                message['instance hash'] = SJCL.codec.hex.fromBits(
-                                               SJCL.hash.sha256.hash(git_hash + relative + instance_data));
+                message['instance hash'] = MD5(git_hash + relative + instance_data);
 
                 this._assignBlame(raw_blame, message, start_line, end_line);
             });

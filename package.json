@@ -21,7 +21,7 @@
         "eslint-plugin-security": "^1.4.0",
         "esprima": "^4.0.1",
         "form-data": "^2.3.3",
-        "sjcl": "^1.0.8",
+        "md5": "^2.2.1",
         "tmp": "0.0.33"
     }
 }
