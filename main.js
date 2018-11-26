@@ -69,7 +69,7 @@ function main(token, isSend = true){
     };
 
     var token   = args['token'];
-    var start   = new Date().getUTCDate();
+    var start   = Math.floor((new Date()).getTime() / 1000);
 
     console.log("INFO - Creating dependency report.")
     var data    = Report.runAudit(root_path);
@@ -86,7 +86,7 @@ function main(token, isSend = true){
         return null;
     }
 
-    var end = new Date().getUTCDate();
+    var end = Math.floor((new Date()).getTime() / 1000);
     result['Date']['End'] = end;
 
     if (args['output_path'] == null){
