@@ -27,6 +27,21 @@ module.exports = {
 
 
     /*
+        URLSTR     := newType('URLSTR', str)
+        description : function to create the url used for communication
+        requires    : host    -> str,
+                        port    -> int
+        returns     : URLSTR
+    */
+    createUrl: function(host, port){
+        const end = '/r1_report_upload_endpoint/';
+        var start = (port == 443) ? 'https://' : 'http://';
+        var mid   = (host == null) ? 'reshift.softwaresecured.com' : host;
+        return start + mid + ":" + port + end;
+    },
+
+
+    /*
         description : function to transport to reshift
         requires    : token    -> str,
                       raw_data -> JSON,
@@ -47,8 +62,8 @@ module.exports = {
             }
         };
 
-        var form = new FormData();
-
+        var form        = new FormData();
+        var reshift_url = this.createUrl(host, port);
         var req = Https.request(options, function (res) {
             var tmp_obj = Tmp.fileSync();
             Files.saveResult(tmp_obj.name, raw_data);
@@ -56,6 +71,11 @@ module.exports = {
             form.append('my_buffer', new Buffer(10));
             form.append('fileformat', 'json');
             form.append('reportfile', Fs.createReadStream(tmp_obj.name));
+        });
+
+        form.submit(reshift_url, function(err, res) {
+            // res – response object (http.IncomingMessage)  //
+            res.resume();
         });
     }
 };
