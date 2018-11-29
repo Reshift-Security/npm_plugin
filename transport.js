@@ -22,23 +22,7 @@ module.exports = {
         form.append('my_buffer', new Buffer(10));
         form.append('fileformat', 'json');
         form.append('reportfile', Fs.createReadStream(tmp_obj.name));
-
         return form;
-    },
-
-
-    /*
-        URLSTR     := newType('URLSTR', str)
-        description : function to create the url used for communication
-        requires    : host    -> str,
-                      port    -> int
-        returns     : URLSTR
-    */
-    createUrl: function(host, port){
-        const end = '/r1_report_upload_endpoint/';
-        var start = (port == 443) ? 'https://' : 'http://';
-        var mid   = (host == null) ? 'reshift.softwaresecured.com' : host;
-        return start + mid + ":" + port + end;
     },
 
 
@@ -52,18 +36,26 @@ module.exports = {
     */
     sendResult: function(token, raw_data, host, port) {
         // Build the post string from an object
-        var form        = this.createForm(token, raw_data);
-        var reshift_url = this.createUrl(host, port);
+        var options = {
+            host: host,
+            port: port,
+            method: 'POST',
+            path: '/r1_report_upload_endpoint/',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Content-Length': JSON.stringify(raw_data).length
+            }
+        };
 
-        form.submit(reshift_url, function(error, response, body){
-            if (!error && response.statusCode == 200) {
-                console.log("INFO - Successfully upload the report.");
-            } else {
-                let status = (response == null) ? null : response.statusCode
-                let msg    = (response == null) ? null : response.statusMessage
-                console.log("INFO - Failed to upload the report, status: " + status);
-                console.log("INFO - Return message: " + msg);
-              }
+        var form = new FormData();
+
+        var req = Https.request(options, function (res) {
+            var tmp_obj = Tmp.fileSync();
+            Files.saveResult(tmp_obj.name, raw_data);
+            form.append('token', token);
+            form.append('my_buffer', new Buffer(10));
+            form.append('fileformat', 'json');
+            form.append('reportfile', Fs.createReadStream(tmp_obj.name));
         });
     }
 };
