@@ -17,11 +17,22 @@ module.exports = {
     createForm: function(token, raw_data){
         var tmp_obj = Tmp.fileSync();
         Files.saveResult(tmp_obj.name, raw_data);
-        var form = new FormData();
-        form.append('token', token);
-        form.append('my_buffer', new Buffer(10));
-        form.append('fileformat', 'json');
-        form.append('reportfile', Fs.createReadStream(tmp_obj.name));
+        // var form = new FormData();
+        // form.append('token', token);
+        // form.append('my_buffer', new Buffer(10));
+        // form.append('fileformat', 'json');
+        // form.append('reportfile', Fs.createReadStream(tmp_obj.name));
+
+        // form data
+        var form = QueryString.stringify({
+            token: token,
+            fileformat: 'json',
+            buffer: new Buffer(10),
+            reportfile: Fs.createReadStream(tmp_obj.name),
+        });
+
+
+
         return form;
     },
 
@@ -54,28 +65,39 @@ module.exports = {
         var options = {
             host: host,
             port: port,
+            cookie: true,
             method: 'POST',
             path: '/r1_report_upload_endpoint/',
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Content-Length': JSON.stringify(raw_data).length
+                'Authorization' : 'Bearer 56356363',
+                'Accept' : 'application/json'
             }
         };
 
-        var form        = new FormData();
-        var reshift_url = this.createUrl(host, port);
-        var req = Https.request(options, function (res) {
-            var tmp_obj = Tmp.fileSync();
-            Files.saveResult(tmp_obj.name, raw_data);
-            form.append('token', token);
-            form.append('my_buffer', new Buffer(10));
-            form.append('fileformat', 'json');
-            form.append('reportfile', Fs.createReadStream(tmp_obj.name));
+        var req = Https.request(options, function(res) {
+            var buffer = "";
+            res.on('data', function(chunk) {
+                buffer += chunk.toString();
+            });
+            res.on('end', function(chunk) {
+                console.log(QueryString.parse(buffer));
+            });
+            req.on('error', function(e) {
+                console.log('problem with request:', e.message);
+            });
+        });
+         var form = this.createForm(token, raw_data);
+
+        // req error
+        req.on('error', function (err) {
+            console.log(err);
         });
 
-        form.submit(reshift_url, function(err, res) {
-            // res – response object (http.IncomingMessage)  //
-            res.resume();
-        });
+        //send request witht the postData form
+        req.write(form);
+        req.end();
+
+
+        // form.pipe(req);
     }
 };
