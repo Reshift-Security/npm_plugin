@@ -8,6 +8,21 @@ const ESprima    = require('esprima');
 const CLIEngine  = ESLint.CLIEngine;
 
 
+const EslintMap = {
+    "security/detect-unsafe-regex": "DDOS",
+    "security/detect-buffer-noassert": "BUFFER_OVERFLOWS",
+    "security/detect-disable-mustache-escape": "XSS",
+    "security/detect-eval-with-expression": "CODE_EXECUTION",
+    "security/detect-no-csrf-before-method-override":  "CSRF",
+    "security/detect-non-literal-fs-filename": "UNAUTHORIZED_ACCESS_FILE_SYSTEM",
+    "security/detect-non-literal-regexp": "DDOS",
+    "security/detect-non-literal-require": "INSECURE_REQUIRE",
+    "security/detect-object-injection": "INSECURE_OBJECT",
+    "security/detect-possible-timing-attacks": "TIME_ATTACK",
+    "security/detect-pseudoRandomBytes": "INSECURE_CRYPTO"
+}
+
+
 module.exports = {
     /*
         AUDITSTR   := newType('AUDITSTR', string)
@@ -103,6 +118,10 @@ module.exports = {
                 var end_line   = message['endLine'] === undefined ? message['line']: message['endLine'];
                 var column     = message['column'] === undefined ? 0 : message['column'];
                 var end_col    = message['endColumn'];
+
+                if(EslintMap.hasOwnProperty(message['ruleId'])){
+                    message['ruleId'] = EslintMap[message['ruleId']]
+                }
 
                 var instance_data = (start_line === end_line && end_line === 1) ? report['source'].slice(column, end_col).replace('\s', ''):
                                          source.slice(start_line, end_line).join('').replace('\s', '');
