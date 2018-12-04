@@ -1,4 +1,6 @@
-#!/user/bin/node
+#!/usr/bin/env node
+'use strict';
+
 const Common    = require('./common.js');
 const Files     = require('./file.js');
 const Transport = require('./transport.js');
@@ -8,7 +10,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 
 
 const parser = new ArgumentParser({
-    version: '1.1.4',
+    version: '1.1.5',
     addHelp:true,
     description: 'NPM security plugin'
 });
@@ -47,14 +49,18 @@ const args = parser.parseArgs();
                   isSend - Optional[bool]
     return:     : Optional[CAPNP]
 */
-function main(token, isSend = true){
-    if (args['token'] == null){
+function getResult(token, isSend = true, host = 'reshift.softwaresecured.com', port = 443, root_path = null){
+    var token      = (args['token'] != null || args['token'] != 'undefined') ? args['token']: token;
+    var host       = (args['host'] != null || args['host'] != 'undefined') ? args['host']: host;
+    var port       = (args['port'] != null || args['port'] != 'undefined') ? args['port']: token;
+    var root_path  = (root_path != null) ? root_path : Files.correctRoot(Files.getCWD());
+
+    if (token == null){
         console.log('INFO - System exit since no token provided.');
         console.log('INFO - Use \'-h\' argument to see help.')
         return null;
     }
 
-    var root_path = Files.correctRoot(Files.getCWD());
     var root_json = {};
     // walk though root and get all the file name
     Files.walkDir(root_path, root_json);
@@ -68,9 +74,7 @@ function main(token, isSend = true){
         return null;
     };
 
-    var token   = args['token'];
     var start   = Math.floor((new Date()).getTime() / 1000);
-
     console.log("INFO - Creating dependency report.")
     var data    = Report.runAudit(root_path);
 
@@ -89,8 +93,8 @@ function main(token, isSend = true){
     var end = Math.floor((new Date()).getTime() / 1000);
     result['Date']['End'] = end;
 
-    if (args['output_path'] == null){
-        Transport.sendResult(token, result, args['host'], args['port'])
+    if (isSend == false){
+        Transport.sendResult(token, result, host, port)
         return null;
     }
     else{
@@ -100,4 +104,8 @@ function main(token, isSend = true){
 };
 
 
-main(null, false);
+// main body
+if (typeof require != 'undefined' && require.main==module) {
+    getResult(null, false);
+}
+

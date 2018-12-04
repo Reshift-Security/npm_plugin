@@ -10,7 +10,7 @@ module.exports = {
         returns     : str
     */
     getCWD: function() {
-        return __dirname;
+        return process.cwd();
     },
 
 
