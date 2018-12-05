@@ -1,6 +1,6 @@
 # Reshift-NPM-Plugin
 *Your source code deserves more. Defend.*<br/>
-                             [--reshift by SoftwareSecured](https://www.softwaresecured.com/reshift/ "Reshift's Homepage")
+<pre>                             [--reshift by SoftwareSecured](https://www.softwaresecured.com/reshift/ "Reshift's Homepage")</pre>
 
 ## Usa Cases
 * Show customers evidence that every code change gets scanned for security violations
