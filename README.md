@@ -17,10 +17,8 @@
 * git
 * Unix environment
 ##### Method
->sudo -H npm i -g reshift_npm_plugin
-<br/>(you will need sudo privilege as it need to access bin folder)
->reshift-scan -v
-<br/>to check if the installation is successful
+>sudo -H npm i -g  reshift_npm_plugin (you will need sudo privilege as it need to access bin folder)
+>reshift-scan -v  to check if the installation is successful
 ##### Usage
 1.     reshift-scan -t <report_token> -u <host_name> -p <port_number>
 <br/>to run the scan on current folder
