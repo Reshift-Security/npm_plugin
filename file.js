@@ -53,7 +53,7 @@ module.exports = {
             try{
                 let isDirectory = fs.statSync(dirPath).isDirectory();
                 // check if this is a node_modules or .git folder
-                let isDepend    = dir.includes('node_modules') || dir.includes('.git') || dir.includes('.vscode');
+                let isDepend    = dir.includes('node_modules') || dir.includes('.git') || dir.includes('.vscode') || dir.includes('doc');
                 // HACK update the is_git which used in later
                 if(dir.includes('.git')) { is_git = true;  }
                 // any walk to none depend folder (main) and add .js file
