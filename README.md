@@ -35,6 +35,8 @@
 1. ```npx node_modules/reshift_npm_plugin/ -t <report_token> -u <host_name> -p <port_number>``` to run the scan on current folder
 2. ```npx node_modules/reshift_npm_plugin/ -h``` to see help
 
+## Resources
+[Js Documentation Page](https://softwaresecured.github.io/npm_plugin/ "Reshift NPM Plugin")
 
 ## Help
 Have more questions? Feel free to [contact us](mailto:support@softwaresecursd.com)
