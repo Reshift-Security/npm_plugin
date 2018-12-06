@@ -5,7 +5,7 @@
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  [--reshift by SoftwareSecured](https://www.softwaresecured.com/reshift/ "Reshift's Homepage")
 
-## Usa Cases
+## Use Cases
 * Show customers evidence that every code change gets scanned for security violations
 * Integrate security early so your quartely penetration tests run more smoothly
 * Notify your developers of issues THEY have created within the software code base
