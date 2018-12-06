@@ -18,10 +18,10 @@
 * Unix environment
 ##### Method
 1. ```sudo -H npm i -g reshift_npm_plugin``` (you will need sudo privilege as it need to access bin folder)
-2. 'reshift-scan -v' to check if the installation is successful
+2. ```reshift-scan -v``` to check if the installation is successful
 ##### Usage
-1.     'reshift-scan -t <report_token> -u <host_name> -p <port_number>' to run the scan on current folder
-2. 'reshift-scan -h' to see help
+1. ```reshift-scan -t <report_token> -u <host_name> -p <port_number>``` to run the scan on current folder
+2. ```reshift-scan -h``` to see help
 
 ## Local Installation
 ##### Requirements
@@ -29,11 +29,11 @@
 * git
 * npx
 ##### Method
-1. 'npm i reshift_npm_plguin'
-2. 'npx node_modules/reshift_npm_plugin/ -v' to check if the installation is successful
+1. ```npm i reshift_npm_plguin```
+2. ```npx node_modules/reshift_npm_plugin/ -v``` to check if the installation is successful
 ##### Usage
-1.     'npx node_modules/reshift_npm_plugin/ -t <report_token> -u <host_name> -p <port_number>' to run the scan on current folder
-2. 'npx node_modules/reshift_npm_plugin/ -h' to see help
+1. ```npx node_modules/reshift_npm_plugin/ -t <report_token> -u <host_name> -p <port_number>``` to run the scan on current folder
+2. ```npx node_modules/reshift_npm_plugin/ -h``` to see help
 
 
 ## Help
