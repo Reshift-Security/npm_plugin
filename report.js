@@ -79,20 +79,20 @@ module.exports = {
                 "security/detect-possible-timing-attacks": 2,
                 "security/detect-pseudoRandomBytes": 2,
                 /** angular rules **/
-                "angularjs-security-rules/detect-angular-trustAs-methods": 1,
-                "angularjs-security-rules/detect-angular-trustAsHtml-method": 1,
-                "angularjs-security-rules/detect-angular-trustAsCss-method": 1,
-                "angularjs-security-rules/detect-angular-trustAsUrl-method": 1,
-                "angularjs-security-rules/detect-angular-trustAsJs-method": 1,
-                "angularjs-security-rules/detect-angular-trustAsResourceUrl-method": 1,
-                "angularjs-security-rules/detect-angular-open-redirect": 1,
-                "angularjs-security-rules/detect-angular-element-methods": 1,
-                "angularjs-security-rules/detect-angular-orderBy-expressions": 1,
-                "angularjs-security-rules/detect-angular-resource-loading": 1,
-                "angularjs-security-rules/detect-angular-sce-disabled": 1,
-                "angularjs-security-rules/detect-angular-scope-expressions": 1,
-                "angularjs-security-rules/detect-angular-service-expressions": 1,
-                "angularjs-security-rules/detect-third-party-angular-translate": 1
+                "angularjs-security-rules/detect-angular-trustAs-methods": 2,
+                "angularjs-security-rules/detect-angular-trustAsHtml-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsCss-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsUrl-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsJs-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsResourceUrl-method": 2,
+                "angularjs-security-rules/detect-angular-open-redirect": 2,
+                "angularjs-security-rules/detect-angular-element-methods": 2,
+                "angularjs-security-rules/detect-angular-orderBy-expressions": 2,
+                "angularjs-security-rules/detect-angular-resource-loading": 2,
+                "angularjs-security-rules/detect-angular-sce-disabled": 2,
+                "angularjs-security-rules/detect-angular-scope-expressions": 2,
+                "angularjs-security-rules/detect-angular-service-expressions": 2,
+                "angularjs-security-rules/detect-third-party-angular-translate": 2
             }
         });
 
