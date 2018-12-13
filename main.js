@@ -10,7 +10,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 
 
 const parser = new ArgumentParser({
-    version: '1.1.6',
+    version: '1.1.71',
     addHelp:true,
     description: 'NPM security plugin'
 });
@@ -56,6 +56,11 @@ function getResult(token, isSend = true, host = 'reshift.softwaresecured.com', p
     var host       = (args['host'] != null || args['host'] != 'undefined') ? args['host']: host;
     var port       = (args['port'] != null || args['port'] != 'undefined') ? args['port']: token;
     var root_path  = (root_path != null) ? root_path : Files.correctRoot(Files.getCWD());
+    var root_json  = {};
+    // walk though root and get all the file name
+    Files.walkDir(root_path, root_json);
+    console.log("INFO - Verifying npm.")
+
     var is_git     = Files.isGit();
     if (token == null){
         console.log('INFO - System exit since no token provided.');
@@ -67,11 +72,6 @@ function getResult(token, isSend = true, host = 'reshift.softwaresecured.com', p
         console.log('INFO - System exit since no git information found.');
         return null;
     }
-
-    var root_json = {};
-    // walk though root and get all the file name
-    Files.walkDir(root_path, root_json);
-    console.log("INFO - Verifying npm.")
 
     var npm_ver  = Common.get_npm(root_path);
     var ver_list = npm_ver.split('.')

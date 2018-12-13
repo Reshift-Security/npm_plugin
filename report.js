@@ -64,7 +64,8 @@ module.exports = {
             envs: ["node", "es6"],
             fix: false, // difference from last example
             useEslintrc: false,
-            plugins: ["security"],
+            plugins: ["security",
+                      "angularjs-security-rules"],
             rules:{
                 "security/detect-unsafe-regex": 2,
                 "security/detect-buffer-noassert": 2,
@@ -76,7 +77,22 @@ module.exports = {
                 "security/detect-non-literal-require": 2,
                 "security/detect-object-injection": 2,
                 "security/detect-possible-timing-attacks": 2,
-                "security/detect-pseudoRandomBytes": 2
+                "security/detect-pseudoRandomBytes": 2,
+                /** angular rules **/
+                "angularjs-security-rules/detect-angular-trustAs-methods": 2,
+                "angularjs-security-rules/detect-angular-trustAsHtml-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsCss-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsUrl-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsJs-method": 2,
+                "angularjs-security-rules/detect-angular-trustAsResourceUrl-method": 2,
+                "angularjs-security-rules/detect-angular-open-redirect": 2,
+                "angularjs-security-rules/detect-angular-element-methods": 2,
+                "angularjs-security-rules/detect-angular-orderBy-expressions": 2,
+                "angularjs-security-rules/detect-angular-resource-loading": 2,
+                "angularjs-security-rules/detect-angular-sce-disabled": 2,
+                "angularjs-security-rules/detect-angular-scope-expressions": 2,
+                "angularjs-security-rules/detect-angular-service-expressions": 2,
+                "angularjs-security-rules/detect-third-party-angular-translate": 2
             }
         });
 
