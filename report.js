@@ -195,19 +195,19 @@ module.exports = {
         // get host name, parse raw data
         var host_name = Common.systemSync('hostname')
         var raw_data  = JSON.parse(data);
+        var islinux   = process.platform === "linux";
+        var end_name  = islinux ? '/package.json' : '\\package.json';
 
         // get info related to git
         var git_hash  = null, proj_name = null, blame_inf = null, git_url = null;
         if (is_git){
             git_hash  = Vcs.getHash(root_path);
-            proj_name = Vcs.getProject(root_path);
+            proj_name = Vcs.getProject(root_path, islinux);
             blame_inf = Vcs.getBlame(root_path, root_json);
             git_url   = Vcs.getURL(root_path);
         }
 
         // get dependency related, assume package.json at root
-        var islinux = process.platform === "linux";
-        var end_name   = islinux ? '/package.json' : '\\package.json';
         var packages  = Files.loadPackage(root_path + end_name);
         var dep_lists = Files.getDependencyList(packages);
         var blm_lists = Vcs.parseBlm(blame_inf, dep_lists);

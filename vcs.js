@@ -47,12 +47,14 @@ module.exports = {
     /**
      * generate current git url
      * @param  {string} root_path - The root directory to perform the scan (default to current)
+     * @param  {string} is_linux  - If the system is on linux or windows
      * @return {string|null}      - return project name as a string if found, null otherwise
      */
-    getProject: function(root_path) {
+    getProject: function(root_path, is_linux) {
         try{
-            var project_name = Common.systemSync('basename \`git rev-parse --show-toplevel\`', root_path);
-            return project_name;
+            var project_name = Common.systemSync('git rev-parse --show-toplevel', root_path);
+            if(is_linux){ return project_name.split('/').slice(-1)[0]; }
+            else { return project_name.split('\\').slice(-1)[0];}
         }
         catch(error){
             console.error(error)
