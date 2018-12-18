@@ -34,7 +34,9 @@ module.exports = {
      * @return {string|null} - return audit result as a json if success, null otherwise
      */
     runAudit: function(root_path){
-        var data = Common.systemSync('ls', root_path);
+        var islinux = process.platform === "linux";
+        var command = islinux ? 'ls' : 'dir';
+        var data  = Common.systemSync(command, root_path);
         if (data.includes('package.json')) {
             // if lock not in the package, we need to create one.
             if (! data.includes('package-lock.json')){
@@ -204,7 +206,9 @@ module.exports = {
         }
 
         // get dependency related, assume package.json at root
-        var packages  = Files.loadPackage(root_path + '/package.json');
+        var islinux = process.platform === "linux";
+        var end_name   = islinux ? '/package.json' : '\\package.json';
+        var packages  = Files.loadPackage(root_path + end_name);
         var dep_lists = Files.getDependencyList(packages);
         var blm_lists = Vcs.parseBlm(blame_inf, dep_lists);
         console.log("INFO - Execute security scanning.")
