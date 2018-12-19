@@ -88,7 +88,7 @@ module.exports = {
      * @return {null}
      */
     saveResult: function(file_path, result){
-        fs.writeFileSync(file_path, JSON.stringify(result));
+        fs.writeFileSync(file_path, JSON.stringify(result), 'utf8');
         console.log("INFO - Created temp file for created report.");
     },
 

@@ -10,7 +10,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 
 
 const parser = new ArgumentParser({
-    version: '1.1.8',
+    version: '1.1.9',
     addHelp:true,
     description: 'NPM security plugin'
 });

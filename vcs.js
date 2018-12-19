@@ -18,7 +18,7 @@ module.exports = {
     getHash: function(root_path) {
         try{
             var git_hash = Common.systemSync('git rev-parse HEAD', root_path);
-            return git_hash;
+            return git_hash.replace('\n', '');
         }
         catch(error){
             console.error(error)
@@ -35,7 +35,7 @@ module.exports = {
     getURL: function(root_path) {
         try{
             var git_url = Common.systemSync('git config --get remote.origin.url', root_path);
-            return git_url;
+            return git_url.replace('\n', '');
         }
         catch(error){
             console.error(error)
@@ -53,8 +53,8 @@ module.exports = {
     getProject: function(root_path, is_linux) {
         try{
             var project_name = Common.systemSync('git rev-parse --show-toplevel', root_path);
-            if(is_linux){ return project_name.split('/').slice(-1)[0]; }
-            else { return project_name.split('\\').slice(-1)[0];}
+            if(is_linux){ return project_name.split('/').slice(-1)[0].replace('\n', ''); }
+            else { return project_name.split('\\').slice(-1)[0].replace('\n', '');}
         }
         catch(error){
             console.error(error)
