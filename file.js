@@ -42,12 +42,11 @@ module.exports = {
      /**
      * recursive walk through a given directory, collect all the javascript file
      * @param  {string} dir       - name of the directory
-     * @param  {string} sep       - separator used for dir
      * @param  {json}   root_json - a list of javascript files in json format
      * @return {json}   return the file listt as json
      */
-    walkDir: function(dir, root_json, sep) {
-        root_json[dir + sep] = [];
+    walkDir: function(dir, root_json) {
+        root_json[dir + path.sep] = [];
         fs.readdirSync(dir).forEach( f => {
             let dirPath = path.join(dir, f);
             // some project might contain broken linked files
@@ -58,15 +57,15 @@ module.exports = {
                 // HACK update the is_git which used in later
                 if(dir.includes('.git')) { is_git = true;  }
                 // any walk to none depend folder (main) and add .js file
-                (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json, sep) :
-                                ((this.isJS(f) && !isDepend) ? root_json[dir + sep].push(f) : {})
+                (isDirectory && !isDepend) ? this.walkDir(dirPath, root_json) :
+                                ((this.isJS(f) && !isDepend) ? root_json[dir + path.sep].push(f) : {})
             }
             catch(error){
             }
         });
         // clean empty one, we care only existing one
-        if(root_json[dir + sep].length === 0){
-            delete root_json[dir + sep]
+        if(root_json[dir + path.sep].length === 0){
+            delete root_json[dir + path.sep]
         }
     },
 

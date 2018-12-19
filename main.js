@@ -55,12 +55,10 @@ function getResult(token, isSend = true, host = 'reshift.softwaresecured.com', p
     var token      = (args['token'] != null || args['token'] != 'undefined') ? args['token']: token;
     var host       = (args['host'] != null || args['host'] != 'undefined') ? args['host']: host;
     var port       = (args['port'] != null || args['port'] != 'undefined') ? args['port']: token;
-    var is_linux   = process.platform === "linux";
-    var sep        = is_linux ? '/' : '\\';
     var root_path  = (root_path != null) ? root_path : Files.correctRoot(Files.getCWD());
     var root_json  = {};
     // walk though root and get all the file name
-    Files.walkDir(root_path, root_json, sep);
+    Files.walkDir(root_path, root_json);
     console.log("INFO - Verifying npm.")
 
     var is_git     = Files.isGit();

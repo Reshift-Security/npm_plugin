@@ -1,3 +1,4 @@
+const fs = require('fs'), path = require('path');
 const Common   = require('./common.js');
 
 
@@ -47,14 +48,12 @@ module.exports = {
     /**
      * generate current git url
      * @param  {string} root_path - The root directory to perform the scan (default to current)
-     * @param  {string} is_linux  - If the system is on linux or windows
      * @return {string|null}      - return project name as a string if found, null otherwise
      */
-    getProject: function(root_path, is_linux) {
+    getProject: function(root_path) {
         try{
             var project_name = Common.systemSync('git rev-parse --show-toplevel', root_path);
-            if(is_linux){ return project_name.split('/').slice(-1)[0].replace('\n', ''); }
-            else { return project_name.split('\\').slice(-1)[0].replace('\n', '');}
+            return project_name.split(path.sep).slice(-1)[0].replace('\n', '');
         }
         catch(error){
             console.error(error)
@@ -72,7 +71,7 @@ module.exports = {
     getBlame: function(root_path, root_json) {
         try{
             var blame_info = {}
-            blame_info['package_json'] = Common.systemSync('git blame -l ' + root_path + '/package.json', root_path);
+            blame_info['package_json'] = Common.systemSync('git blame -l ' + root_path + path.sep + 'package.json', root_path);
             Object.keys(root_json).forEach(path =>{
                 root_json[path].forEach( file => {
                     blame_info[path + file] = Common.systemSync('git blame -l ' + path + file, root_path);
