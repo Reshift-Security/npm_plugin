@@ -1,31 +1,48 @@
 {
-    "name": "reshift_npm_plugin",
+    "java": {
+        "dependencies": [
+            {
+                "groupId": "commons-io",
+                "artifactId": "commons-io",
+                "version": "2.6"
+            }
+        ]
+    },
+    "@comment java": ["Java Dependencies Commons-IO is simply an example of how to import java packages.",
+                        "When we have the extractor up on Central Repository, we will be pull this down into the client machine"],
+    "name": "reshift-plugin-npm",
     "version": "1.1.91",
-    "description": "Dependency checker and issue reporter",
+    "description": "Security vulnerability scanner",
     "license": "MIT",
     "repository": "softwaresecured/npm_plugin",
     "main": "main.js",
     "keywords": [
-        "softwaresecured",
+        "reshiftsecurity",
         "npm",
-        "dependency",
         "vulnerability"
     ],
     "scripts": {
         "start": "node main.js",
-        "say-hello": "echo 'Hello World!'"
+        "postinstall": "./node_modules/.bin/node-java-maven",
+        "test": "jest"
     },
     "bin": {
         "reshift-scan": "main.js"
     },
     "dependencies": {
         "argparse": "^1.0.10",
-        "eslint": "^5.9.0",
-        "eslint-plugin-angularjs-security-rules": "^1.0.6",
-        "eslint-plugin-security": "^1.4.0",
+        "compressing": "^1.5.0",
         "esprima": "^4.0.1",
+        "form-data": "^3.0.0",
+        "java": "^0.12.1",
         "md5": "^2.2.1",
+        "node-java-maven": "^0.1.1",
         "request": "^2.88.0",
-        "tmp": "0.0.33"
+        "simple-git": "^1.131.0",
+        "tmp": "0.1.0",
+        "url-join": "4.0.1"
+    },
+    "devDependencies": {
+        "jest": "^25.1.0"
     }
 }
