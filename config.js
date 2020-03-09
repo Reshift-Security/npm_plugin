@@ -7,16 +7,21 @@ class Config {
     constructor(config){
         this.token = null;
         this.projectDir = null;
+        this.endpoint = null;
+
+        if(!config){
+            // The caller did not pass in a configuration dictionary
+            // in this case parse out the config via CLI
+            this.parseCLI()
+        } else {
+            this.parseCommon(config);
+        }
     }
 
-    _parseCommon(config){
+    parseCommon(config){
         this.token = ('token' in config && config['token']) ? config['token']: null;
         this.projectDir = ('inDir' in config && config['inDir']) ? config['inDir']: null;
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
-    }
-
-    parseConfig(config){
-        this._parseCommon(config);
     }
 
     parseCLI(){
@@ -31,9 +36,9 @@ class Config {
             help: 'Optional host endpoint, default https://reshift.reshiftsecurity.com/',
             required: false
         });
-        const args = parser.parseArgs();
 
-        this._parseCommon(args);
+        const args = parser.parseArgs();
+        this.parseCommon(args);
     }
 
     isValid(){

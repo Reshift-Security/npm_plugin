@@ -8,7 +8,6 @@ const assert = require('assert');
 class Git{
     constructor(projectRoot){
         this.simpleGit = require('simple-git')(projectRoot);
-        this.branch = null;
     }
 
     async branchInfo(){

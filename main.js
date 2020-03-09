@@ -8,15 +8,7 @@ const transport = require('./transport.js');
 
 
 async function generateReport(configuration){
-    const newConfig = new config.Config();
-    if(!configuration){
-        // The caller did not pass in a configuration dictionary
-        // in this case call the config class to parse out the CLI
-        newConfig.parseCLI()
-    } else {
-        newConfig.parseConfig(configuration);
-    }
-
+    const newConfig = new config.Config(configuration);
     if( !newConfig.isValid() ){
         console.error("Invalid configuration used for the reshift-plugin-npm");
     }

@@ -30,7 +30,6 @@ class Extractor {
         process.env.TRAP_FOLDER_JAVASCRIPT = this.projectOutputDir.name;
         process.env.LGTM_SRC = this.projectRoot;
         process.env.LGTM_INDEX_TYPESCRIPT = 'NONE';
-
     }
 
     cleanup(){
@@ -74,10 +73,10 @@ class Extractor {
     async compressOutput(){
         this.packagedFile = tmp.fileSync();
         await compressing.tar.compressDir(this.projectOutputDir.name, this.packagedFile.name)
-        .then(result=>result)
-        .catch(function(reason){
-            console.error(reason);
-        });
+            .then(result=>result)
+            .catch(function(reason){
+                console.error(reason);
+            });
         return this.packagedFile.name;
     }
 }

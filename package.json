@@ -23,7 +23,8 @@
     ],
     "scripts": {
         "start": "node main.js",
-        "postinstall": "./node_modules/.bin/node-java-maven"
+        "postinstall": "./node_modules/.bin/node-java-maven",
+        "test": "jest"
     },
     "bin": {
         "reshift-scan": "main.js"
