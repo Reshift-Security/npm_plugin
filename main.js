@@ -15,8 +15,8 @@ async function generateReport(configuration){
 
     // lets get the git information for this project folder
     const gitInstance = new git.Git(newConfig.projectDir)
-    let meta = await gitInstance.branchInfo().then(result=>result);
-    meta['commitHash'] = await gitInstance.commitHash().then(result=>result);
+    let meta = await gitInstance.branchInfo();
+    meta['commitHash'] = await gitInstance.commitHash();
 
     var ex = new extractor.Extractor(newConfig.projectDir)
     ex.writeProjectMeta(meta);

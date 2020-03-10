@@ -17,7 +17,7 @@ class Git{
                 else { resolve(summary); }
             });
         }.bind(this));
-        const branchResult = await branchPromise.then(result=>result);
+        const branchResult = await branchPromise;
         let info = {};
         if (branchResult.current in branchResult.branches){
             const matches = branchResult.branches[branchResult.current].label.match(/\[(.*)\]/);
@@ -37,7 +37,7 @@ class Git{
             });
         }.bind(this));
 
-        return await revParse.then(result=>result);
+        return await revParse;
     }
 }
 
