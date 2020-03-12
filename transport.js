@@ -38,10 +38,9 @@ class Transport {
 
         var form = new FormData();
         form.append('token', token);
-        form.append('reportfile_compressed', fs.createReadStream(filePath));
+        form.append('reportdir_compressed', fs.createReadStream(filePath));
         form.submit(url, function(err, res) {
             if( err ){ console.error(err); }
-            res.resume();
         });
     }
 }

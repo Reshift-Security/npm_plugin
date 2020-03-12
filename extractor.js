@@ -72,11 +72,11 @@ class Extractor {
 
     async compressOutput(){
         this.packagedFile = tmp.fileSync();
-        await compressing.tar.compressDir(this.projectOutputDir.name, this.packagedFile.name)
-            .then(result=>result)
+        await compressing.tar.compressDir(this.projectOutputDir.name, this.packagedFile.name, { ignoreBase: true })
             .catch(function(reason){
                 console.error(reason);
             });
+
         return this.packagedFile.name;
     }
 }
