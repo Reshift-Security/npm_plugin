@@ -4,7 +4,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 const fs = require("fs");
 
 class Config {
-    constructor(config){
+    constructor(config = null){
         this.token = null;
         this.projectDir = null;
         this.endpoint = null;

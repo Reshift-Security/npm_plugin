@@ -8,8 +8,10 @@
             }
         ]
     },
-    "@comment java": ["Java Dependencies Commons-IO is simply an example of how to import java packages.",
-                        "When we have the extractor up on Central Repository, we will be pull this down into the client machine"],
+    "@comment java": [
+        "Java Dependencies Commons-IO is simply an example of how to import java packages.",
+        "When we have the extractor up on Central Repository, we will be pull this down into the client machine"
+    ],
     "name": "reshift-plugin-npm",
     "version": "1.1.91",
     "description": "Security vulnerability scanner",
