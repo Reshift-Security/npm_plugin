@@ -11,6 +11,9 @@
 * Notify your developers of issues THEY have created within the software code base
 * A convenient way to automate application security testing
 
+## Java Dependencies
+The Reshift NPM plugin currently calls Java code to perform the extraction process. The jar required is referrred to in the package.json `java` dependencies section. This artifact is expected to come from Maven Central. Make sure you either copy this artifact (`.jar`) locally to a folder named `dependencies` or point to the published artifact from Maven Central.
+
 ## Standard Installation
 ##### Requirements
 * NPM version >= 5.2.0
