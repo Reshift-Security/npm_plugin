@@ -1,31 +1,21 @@
 {
-    "java": {
-        "dependencies": [
-            {
-                "groupId": "commons-io",
-                "artifactId": "commons-io",
-                "version": "2.6"
-            }
-        ]
-    },
-    "@comment java": [
-        "Java Dependencies Commons-IO is simply an example of how to import java packages.",
-        "When we have the extractor up on Central Repository, we will be pull this down into the client machine"
-    ],
     "name": "reshift-plugin-npm",
     "version": "1.1.91",
     "description": "Security vulnerability scanner",
     "license": "MIT",
-    "repository": "softwaresecured/npm_plugin",
+    "repository": "reshiftsecurity/npm_plugin",
     "main": "main.js",
     "keywords": [
         "reshiftsecurity",
+        "security",
+        "developer first security",
+        "devsecops",
+        "appsec",
         "npm",
         "vulnerability"
     ],
     "scripts": {
         "start": "node main.js",
-        "postinstall": "./node_modules/.bin/node-java-maven",
         "test": "jest"
     },
     "bin": {
@@ -33,16 +23,19 @@
     },
     "dependencies": {
         "argparse": "^1.0.10",
+        "cd": "^0.3.3",
         "compressing": "^1.5.0",
         "esprima": "^4.0.1",
         "form-data": "^3.0.0",
+        "git-url-parse": "^11.2.0",
         "java": "^0.12.1",
         "md5": "^2.2.1",
-        "node-java-maven": "^0.1.1",
+        "pretty-ms": "^7.0.1",
         "request": "^2.88.0",
-        "simple-git": "^1.131.0",
+        "simple-git": "^2.20.1",
         "tmp": "0.1.0",
-        "url-join": "4.0.1"
+        "url-join": "4.0.1",
+        "valid-url": "^1.0.9"
     },
     "devDependencies": {
         "jest": "^25.1.0"
