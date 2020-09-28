@@ -26,27 +26,35 @@ class ScanService {
         return new Promise((resolve, reject) => {
             request(requestOptions, (error, response, body) => {
                 var isFailed = false;
+                var responseCode = 1;
                 if (error) {
                     console.error(error);
                     isFailed = true;
                 }
                 if (response && response.statusCode >= 300) {
-                    console.error(util.format('Request failed <%s> %s', response.statusCode, response.statusMessage));
                     isFailed = true;
+                    responseCode = response.statusCode;
+                }
+
+                var jsonBody = {};
+                var userMessage = response.statusMessage;
+                try {
+                    jsonBody = JSON.parse(body);
+                    if (jsonBody.scanMessage) {
+                        userMessage = jsonBody.scanMessage;
+                    }
+                } catch(e) {
+                    jsonBody = {};
+                    userMessage = response.statusMessage;
                 }
                 if (isFailed) {
+                    console.error(util.format('ERROR <%s> %s', responseCode, userMessage));
                     resolve({});
+                } else if (parseJSON) {
+                    resolve(jsonBody);
                 }
-                if (parseJSON) {
-                    try {
-                        const jsonBody = JSON.parse(body);
-                        resolve(jsonBody);
-                    } catch(e) {
-                        resolve({});
-                    }
-                } else {
-                    resolve(body);
-                }
+
+                resolve(body);
             });
         });
     }
@@ -64,7 +72,7 @@ class ScanService {
 
     printTotals(scanResponse) {
         if (scanResponse.details) {
-            console.log('================ Scan result summary:');
+            console.log('================ Reshift Security report summary:');
             console.log(util.format('    Critical: %s', scanResponse.details.critical.total));
             console.log(util.format('    High:     %s', scanResponse.details.high.total));
             console.log(util.format('    Moderate: %s', scanResponse.details.moderate.total));
@@ -73,7 +81,7 @@ class ScanService {
         }
     }
 
-    async getScanStatus(statusUrl, currentStatus, attemptCounter = 1) {
+    async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1) {
         if ((this.serviceRequestIntervalMS * attemptCounter) > this.serviceTimeoutMS) {
             console.error(util.format('TIMEOUT: Scan execution time exceeded timeout setting of %s', 
                 prettyMilliseconds(this.serviceTimeoutMS)));
@@ -81,29 +89,38 @@ class ScanService {
         }
 
         assert(statusUrl, 'invalid status url');
-        const statusResponse = await this.sendRequest(this.buildRequestOptions(statusUrl));
+        const statusResponse = await this.sendRequest(
+            this.buildRequestOptions(
+                statusUrl,
+                'GET',
+                {
+                    token: token
+                })
+            );
 
         if (statusResponse.scanStatus) {
             const scanStatus = statusResponse.scanStatus;
             switch(scanStatus) {
                 case 'FAILED':
                     console.log(util.format('Error occurred while executing scan %s', 
-                        statusResponse.statusMessage));
+                        statusResponse.scanMessage));
                     return false;
                 case 'COMPLETE':
                     console.log('Scan completed. Login to reshift dashboard to view report details.');
                     this.printTotals(statusResponse);
-                    if (statusResponse.policyStatus === 'False') {
-                        console.error('Project failed security gate thresholds');
+                    if (statusResponse.policyStatus === null) {
+                        log.warning('Was not able to retrieve security report summary. Login to Reshift for report details');
+                    } else if (!statusResponse.policyStatus) {
+                        console.error('RESHIFT SECURITY: Project failed security gate thresholds.');
                         return false;
                     }
                     return true;
                 default:
                     if (scanStatus !== currentStatus) {
-                        console.log(util.format('Scan status: %s %s', scanStatus, statusResponse.statusMessage));
+                        console.log(util.format('Scan status: %s %s', scanStatus, statusResponse.scanMessage));
                     }
                     await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
-                    return await this.getScanStatus(statusUrl, scanStatus, attemptCounter+1);
+                    return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1);
             }
         }
 
@@ -132,7 +149,7 @@ class ScanService {
         const scanResponse = await this.sendRequest(scanRequestOptions);
         if(scanResponse.statusUrl) {
             console.log('Scan initialized, executing...')
-            return await this.getScanStatus(scanResponse.statusUrl, scanResponse.scanStatus);
+            return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
         } else {
             console.error('Scan was not able to start successfully.');
         }
