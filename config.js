@@ -24,6 +24,7 @@ class Config {
         this.projectDir = ('projectDir' in config && config['projectDir']) ? config['projectDir']: '.';
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
         this.timeoutSeconds = ('timeoutSeconds' in config && config['timeoutSeconds']) ? config['timeoutSeconds']: 600;
+        this.language = ('language' in config && config['language']) ? config['language']: null;
     }
 
     parseCLI(){
@@ -46,6 +47,10 @@ class Config {
         });
         parser.addArgument( [ '-s', '--timeoutSeconds' ], { 
             help: 'Optional timeout in seconds, default 600',
+            required: false
+        });
+        parser.addArgument( [ '-l', '--language' ], { 
+            help: 'Optional project programming language, default auto-detect',
             required: false
         });
 

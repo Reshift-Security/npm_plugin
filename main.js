@@ -37,8 +37,8 @@ async function runScan(configuration) {
     var projectProviderUrl = repoInfo.href;
     
     var start = new Date();
-    console.log(util.format('RESHIFT SECURITY: Starting security scan for project %s', repoInfo.full_name));
-    const scannerService = new scanService.ScanService(configuration.endpoint, configuration.timeoutSeconds);
+    console.log(util.format('RESHIFT SECURITY: Starting scan for project %s', repoInfo.full_name));
+    const scannerService = new scanService.ScanService(configuration.endpoint, configuration.timeoutSeconds, configuration.language);
     const scanSuccess = await scannerService.executeScan(
         configuration.token,
         projectProviderUrl,
