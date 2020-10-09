@@ -3,6 +3,7 @@
 const ArgumentParser = require('argparse').ArgumentParser;
 const fs = require("fs");
 const validUrl = require('valid-url');
+const packageInfo = require('./package.json');
 
 class Config {
     constructor(config = null){
@@ -29,7 +30,7 @@ class Config {
 
     parseCLI(){
         const parser = new ArgumentParser({
-            version: '1.1.91',
+            version: packageInfo.version,
             addHelp:true,
             description: 'NPM security plugin'
         });

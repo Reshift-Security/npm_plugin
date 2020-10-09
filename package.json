@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Security vulnerability scanner",
     "license": "MIT",
-    "repository": "reshiftsecurity/npm_plugin",
+    "repository": "https://github.com/softwaresecured/npm_plugin",
     "main": "main.js",
     "keywords": [
         "reshift",
@@ -28,7 +28,6 @@
         "esprima": "^4.0.1",
         "form-data": "^3.0.0",
         "git-url-parse": "^11.2.0",
-        "java": "^0.12.1",
         "md5": "^2.2.1",
         "pretty-ms": "^7.0.1",
         "request": "^2.88.0",
