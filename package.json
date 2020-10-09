@@ -1,6 +1,6 @@
 {
     "name": "@reshiftsecurity/reshift-plugin-npm",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Security vulnerability scanner",
     "license": "MIT",
     "repository": "https://github.com/softwaresecured/npm_plugin",
@@ -9,10 +9,21 @@
         "reshift",
         "reshift security",
         "security",
+        "javascript security",
+        "node security",
+        "angular security",
+        "react security",
         "developer first security",
         "devsecops",
         "appsec",
-        "vulnerability"
+        "vulnerability",
+        "vue security",
+        "jquery",
+        "restify",
+        "xunit",
+        "babel",
+        "websockets",
+        "lodash"
     ],
     "scripts": {
         "start": "node main.js",
@@ -24,19 +35,19 @@
     "dependencies": {
         "argparse": "^1.0.10",
         "cd": "^0.3.3",
-        "compressing": "^1.5.0",
+        "compressing": "^1.5.1",
         "esprima": "^4.0.1",
         "form-data": "^3.0.0",
-        "git-url-parse": "^11.2.0",
-        "md5": "^2.2.1",
+        "git-url-parse": "^11.3.0",
+        "md5": "^2.3.0",
         "pretty-ms": "^7.0.1",
-        "request": "^2.88.0",
-        "simple-git": "^2.20.1",
+        "request": "^2.88.2",
+        "simple-git": "^2.21.0",
         "tmp": "0.1.0",
         "url-join": "4.0.1",
         "valid-url": "^1.0.9"
     },
     "devDependencies": {
-        "jest": "^25.1.0"
+        "jest": "^25.5.4"
     }
 }

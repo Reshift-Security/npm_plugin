@@ -22,16 +22,14 @@ async function runScan(configuration) {
     var branch = meta.remotes
     if (!!!branch) {
        branch = meta.local
-       console.error('ERROR: Git project does not seem to have remote branch tracking. Unable to proceed with scan.');
-       exit(1);
+       console.warn('WARN: Unable to get project git state. Project is either in a detached state or our of sync with remote.');
     }
     var gitStatus = await gitInstance.getGitStatus();
     if (!gitStatus.isClean()) {
-        console.error('ERROR: Git project seems to have local changes or is not clean. Make sure local copy is in sync with remote.');
-        exit(1);
+        console.warn('WARN: Git project seems to have local changes or is not clean. Local changes will not be scanned.');
     }
-    if (gitStatus.ahead > 0 || gitStatus.behind > 0) {
-        console.error('ERROR: Git project seems to be out of sync with remote (ahead/behind). Make sure local copy is in sync with remote.');
+    if (gitStatus.ahead > 0) {
+        console.error('ERROR: Git project seems to be ahead of remote. Make sure local copy is in sync with remote.');
         exit(1);
     }
     var projectProviderUrl = repoInfo.href;

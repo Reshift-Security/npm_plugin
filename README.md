@@ -14,6 +14,8 @@ The plugin is for JavaScript developers looking to integrate security seamlessly
 * DevSec coach and remediation assitance
 * Additional vulnerability resources
 
+> NOTE: Javascript scanning is only availabe to a closed beta group. To join the waitlist visit [reshiftsecurity.com](https://reshiftsecurity.com) and sign up.
+
 Visit our documentation for help setting up NPM https://docs.reshiftsecurity.com/integrations/npm.
 
 ## Installation
