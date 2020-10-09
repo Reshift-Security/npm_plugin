@@ -16,7 +16,7 @@ const packageInfo = require('./package.json');
 class ScanService {
     serviceHost
     serviceTimeoutMS
-    serviceRequestIntervalMS = 30000
+    serviceRequestIntervalMS = 20000
     requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version)
     logError = 'ERROR';
     logWarn = 'WARN';
