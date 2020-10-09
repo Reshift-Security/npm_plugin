@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Reshift NPM plugin: Home</title>
+</head>
+<p><a href="http://reshiftsecurity.com/"><img
+            src="https://reshiftsecurity-content.s3.ca-central-1.amazonaws.com/icons/reshift.png"
+            alt="Reshift Logo"></a></p>
+<p> <a href="https://npmjs.org/package/@reshiftsecurity/reshift-plugin-npm"><img
+            src="https://img.shields.io/npm/v/@reshiftsecurity/reshift-plugin-npm.svg" alt="NPM Version"></a>
+    <a href="https://npmcharts.com/compare/@reshiftsecurity/reshift-plugin-npm?minimal=true"><img
+            src="https://img.shields.io/npm/dw/@reshiftsecurity/reshift-npm-plugin" alt="NPM Downloads"></a></p>
+<p>Reshift is a lightweight JavaScript security plugin for NPM that quickly finds vulnerabilities, offers multiple code
+    remediation snippets and DevSec coaching to help build more secure code.
+    <br />
+    <br />
+    The plugin is for JavaScript developers looking to integrate security seamlessly into their software development
+    practices. Reshift is wholly focused on security, allowing developers to meaningfully shift left - fixing security
+    bugs early on.</p>
+<h2 id="features">Features</h2>
+<ul>
+    <li>A curated list of JavaScript security checks, vetted by security experts</li>
+    <li>Rich developer-centric issue descriptions</li>
+    <li>DevSec coach and remediation assitance</li>
+    <li>Additional vulnerability resources</li>
+</ul>
+<p>Visit our documentation for help setting up NPM <a
+        href="https://docs.reshiftsecurity.com/integrations/npm">https://docs.reshiftsecurity.com/integrations/npm</a>.
+</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash">$ <span class="hljs-built_in">npm</span> install -g @reshiftsecurity/reshift-plugin-<span class="hljs-built_in">npm</span>
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>You will need a reshift account to able to use this plugin. <a
+        href="https://reshift.reshiftsecurity.com/onboarding">Sign up for free here</a></p>
+<p>Follow this instructions to on-board your git project and obtain your reshift token. You can then scan your project
+    by running this command inside your project root:</p>
+<pre><code class="lang-bash">$ reshift-scan -t <span class="hljs-tag">&lt;<span class="hljs-name">your</span> <span class="hljs-attr">reshift</span> <span class="hljs-attr">token</span> <span class="hljs-attr">here</span>&gt;</span>
+</code></pre>
+<p>For more optional parameters, use the help argument <code>-h</code></p>
+<pre><code class="lang-bash"><span class="hljs-variable">$ </span>reshift-scan -h
+</code></pre>
+<h2 id="license">License</h2>
+<p> <a href="LICENSE">MIT</a></p>
+<h2 id="help">Help</h2>
+<p>Have more questions? Feel free to <a href="mailto:dev@reshiftsecurity.com">contact us</a></p>
+
+</html>
