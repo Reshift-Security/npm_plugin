@@ -1,90 +1,48 @@
-# Reshift-NPM-Plugin
-*Your source code deserves more. Defend.*<br/>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- [--reshift by SoftwareSecured](https://www.softwaresecured.com/reshift/ "Reshift's Homepage")
+[![Reshift Logo](https://reshiftsecurity-content.s3.ca-central-1.amazonaws.com/icons/reshift.png)](http://reshiftsecurity.com/)
 
-## Use Cases
-* Show customers evidence that every code change gets scanned for security violations
-* Integrate security early so your quartely penetration tests run more smoothly
-* Notify your developers of issues THEY have created within the software code base
-* A convenient way to automate application security testing
+  [![NPM Version][npm-image]][npm-url]
+  [![NPM Downloads][downloads-image]][downloads-url]
 
-## Java Dependencies
-The Reshift NPM plugin currently calls Java code to perform the extraction process. The jar required is referrred to in the package.json `java` dependencies section. This artifact is expected to come from Maven Central. Make sure you either copy this artifact (`.jar`) locally to a folder named `dependencies` or point to the published artifact from Maven Central.
+Reshift is a lightweight JavaScript security plugin for NPM that quickly finds vulnerabilities, offers multiple code remediation snippets and DevSec coaching to help build more secure code.
+<br/>
+<br/>
+The plugin is for JavaScript developers looking to integrate security seamlessly into their software development practices. Reshift is wholly focused on security, allowing developers to meaningfully shift left - fixing security bugs early on.
 
-## Standard Installation
-##### Requirements
-* NPM version >= 5.2.0
-* git
-* Unix environment
-##### Method
-1. ```sudo -H npm i -g reshift_npm_plugin``` (you will need sudo privilege as it need to access bin folder)
-2. ```reshift-scan -v``` to check if the installation is successful
-##### Usage
-1. ```reshift-scan -t <report_token> -e <reshift_url> -i <javascript_source_dir>``` to run the scan on current folder (endpoint '-e' defaults to reshift website)
-2. ```reshift-scan -h``` to see help
+## Features
+* A curated list of JavaScript security checks, vetted by security experts
+* Rich developer-centric issue descriptions
+* DevSec coach and remediation assitance
+* Additional vulnerability resources
 
-## Local Installation
-##### Requirements
-* NPM version >= 5.2.0
-* git
-* npx
-##### Method
-1. ```npm i reshift_npm_plguin```
-2. ```npx node_modules/reshift_npm_plugin/ -v``` to check if the installation is successful
-##### Usage
-1. ```npx node_modules/reshift_npm_plugin/ -t <report_token> -e <reshift_url> -i <javascript_source_dir>``` to run the scan on current folder (port and host default to reshift website)
-2. ```npx node_modules/reshift_npm_plugin/ -h``` to see help
+Visit our documentation for help setting up NPM https://docs.reshiftsecurity.com/integrations/npm.
 
-## Debugging / Quick testing
-##### Linking to local NPM
-Here are example steps to "link" this package to your global npm installation. This will mimic as if you have installed the plugin globally and your plugin changes will take effect once you save and re-run.
+## Installation
 
-```
-cd ~/projects/npm-plugin    # go into the plugin directory
-npm link                    # creates global link
+```bash
+$ npm install -g @reshiftsecurity/reshift-plugin-npm
 ```
 
-Then you can go into a folder where some javascript code exists and run the plugin `reshift-scan -t <report_token> -e <reshift_url> -i <javascript_source_dir>`
+## Usage
 
-You can also "install" your linked package in another project using npm link.
+You will need a reshift account to able to use this plugin. [Sign up for free here](https://reshift.reshiftsecurity.com/onboarding)
 
+Follow this instructions to on-board your git project and obtain your reshift token. You can then scan your project by running this command inside your project root:
+```bash
+$ reshift-scan -t <your reshift token here>
 ```
-cd ~/projects/node-bloggy   # go into other package directory
-npm link reshift-plugin-npm # link-install the package
+For more optional parameters, use the help argument `-h`
+```bash
+$ reshift-scan -h
 ```
-##### Debugging
-Create a VSCode NodeJS run configuration similar to the one below. You may need to update the values for 'token', 'endpoint', and 'inDir' (where your javascript source code is).
-```
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/main.js",
-            "args": [
-                "-t",
-                "<token>",
-                "-e",
-                "http://localhost:8000",
-                "-i",
-                "/path/to/javascript/source"
-            ]
-        }
-    ]
-}
-```
-Once you have that setup, place your breakpoints, open the debug tab from VSCode and click the run button to debug.
 
-## Resources
-[Js Documentation Page](https://softwaresecured.github.io/npm_plugin/ "Reshift NPM Plugin")
+## License
+
+  [MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/@reshiftsecurity/reshift-plugin-npm.svg
+[npm-url]: https://npmjs.org/package/@reshiftsecurity/reshift-plugin-npm
+[downloads-image]: https://img.shields.io/npm/dw/@reshiftsecurity/reshift-npm-plugin
+[downloads-url]: https://npmcharts.com/compare/@reshiftsecurity/reshift-plugin-npm?minimal=true
 
 ## Help
-Have more questions? Feel free to [contact us](mailto:support@softwaresecured.com)
+Have more questions? Feel free to [contact us](mailto:dev@reshiftsecurity.com)

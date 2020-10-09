@@ -39,6 +39,32 @@ class Git{
 
         return await revParse;
     }
+
+    async getRepositoryInfo() {
+        const uriParse = new Promise(function(resolve, reject){
+            this.simpleGit.listRemote(['--get-url'], function(err, data){
+                if( err ){ reject(err); } 
+                else {
+                    resolve(require("git-url-parse")(data.toString().replace('\n','')));
+                }
+            });
+        }.bind(this));
+
+        return await uriParse;
+    }
+
+    async getGitStatus() {
+        const gitStatus = new Promise(function(resolve, reject){
+            this.simpleGit.status([], function(err, data){
+                if( err ){ reject(err); } 
+                else {
+                    resolve(data);
+                }
+            });
+        }.bind(this));
+
+        return await gitStatus;
+    }
 }
 
 module.exports = {

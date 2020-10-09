@@ -2,6 +2,8 @@
 
 const ArgumentParser = require('argparse').ArgumentParser;
 const fs = require("fs");
+const validUrl = require('valid-url');
+const packageInfo = require('./package.json');
 
 class Config {
     constructor(config = null){
@@ -20,20 +22,36 @@ class Config {
 
     parseCommon(config){
         this.token = ('token' in config && config['token']) ? config['token']: null;
-        this.projectDir = ('inDir' in config && config['inDir']) ? config['inDir']: null;
+        this.projectDir = ('projectDir' in config && config['projectDir']) ? config['projectDir']: '.';
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
+        this.timeoutSeconds = ('timeoutSeconds' in config && config['timeoutSeconds']) ? config['timeoutSeconds']: 600;
+        this.language = ('language' in config && config['language']) ? config['language']: null;
     }
 
     parseCLI(){
         const parser = new ArgumentParser({
-            version: '1.1.91',
+            version: packageInfo.version,
             addHelp:true,
             description: 'NPM security plugin'
         });
-        parser.addArgument( [ '-t', '--token' ], { help: 'Token MUST be specified to upload reports', required: true });
-        parser.addArgument( [ '-i', '--inDir' ], { help: 'Root directory of a project MUST be specified', required: true });
+        parser.addArgument( [ '-t', '--token' ], {
+            help: 'Reshift Token MUST be specified to run a scan', 
+            required: true 
+        });
+        parser.addArgument( [ '-p', '--projectDir' ], {
+            help: 'Optional Root directory of a project to be scanned. Default is current directory "."',
+            required: false 
+        });
         parser.addArgument( [ '-e', '--endpoint' ], { 
             help: 'Optional host endpoint, default https://reshift.reshiftsecurity.com/',
+            required: false
+        });
+        parser.addArgument( [ '-s', '--timeoutSeconds' ], { 
+            help: 'Optional timeout in seconds, default 600',
+            required: false
+        });
+        parser.addArgument( [ '-l', '--language' ], { 
+            help: 'Optional project programming language, default auto-detect',
             required: false
         });
 
@@ -43,11 +61,20 @@ class Config {
 
     isValid(){
         if( !this.token ){
-            console.error('invalid token');
+            console.error('Configuration Error: invalid token');
             return false;
         }
         if( !this.projectDir || !fs.existsSync(this.projectDir) ){
-            console.error('invalid inDir or project directory does not exists');
+            console.error('Configuration Error: invalid projectDir or project directory does not exists (please use absolute path)');
+            return false;
+        }
+        if ( !this.endpoint || !validUrl.isUri(this.endpoint) ){
+            console.error('Configuration Error: invalid endpoint; endpoint URL needs to be a valid http(s) url');
+            return false;
+        }
+        this.timeoutSeconds = Number.parseInt(this.timeoutSeconds);
+        if ( !this.timeoutSeconds || !Number.isInteger(this.timeoutSeconds) ){
+            console.error('Configuration Error: invalid timeoutSeconds value');
             return false;
         }
 
