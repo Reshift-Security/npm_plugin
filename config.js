@@ -4,6 +4,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 const fs = require("fs");
 const validUrl = require('valid-url');
 const packageInfo = require('./package.json');
+const detaultTimeoutSeconds = 600
 
 class Config {
     constructor(config = null){
@@ -24,14 +25,14 @@ class Config {
         this.token = ('token' in config && config['token']) ? config['token']: null;
         this.projectDir = ('projectDir' in config && config['projectDir']) ? config['projectDir']: '.';
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
-        this.timeoutSeconds = ('timeoutSeconds' in config && config['timeoutSeconds']) ? config['timeoutSeconds']: 600;
+        this.timeoutSeconds = ('timeoutSeconds' in config && config['timeoutSeconds']) ? config['timeoutSeconds']: detaultTimeoutSeconds;
         this.language = ('language' in config && config['language']) ? config['language']: null;
     }
 
     parseCLI(){
         const parser = new ArgumentParser({
             version: packageInfo.version,
-            addHelp:true,
+            addHelp: true,
             description: 'NPM security plugin'
         });
         parser.addArgument( [ '-t', '--token' ], {
@@ -47,7 +48,7 @@ class Config {
             required: false
         });
         parser.addArgument( [ '-s', '--timeoutSeconds' ], { 
-            help: 'Optional timeout in seconds, default 600',
+            help: 'Optional timeout in seconds, default ' + detaultTimeoutSeconds.toString(),
             required: false
         });
         parser.addArgument( [ '-l', '--language' ], { 
