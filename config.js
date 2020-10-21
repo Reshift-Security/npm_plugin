@@ -25,7 +25,7 @@ class Config {
         this.token = ('token' in config && config['token']) ? config['token']: null;
         this.projectDir = ('projectDir' in config && config['projectDir']) ? config['projectDir']: '.';
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
-        this.timeoutSeconds = ('timeoutSeconds' in config && config['timeoutSeconds']) ? config['timeoutSeconds']: detaultTimeoutSeconds;
+        this.timeoutSeconds = detaultTimeoutSeconds;
         this.language = ('language' in config && config['language']) ? config['language']: null;
     }
 
@@ -45,10 +45,6 @@ class Config {
         });
         parser.addArgument( [ '-e', '--endpoint' ], { 
             help: 'Optional host endpoint, default https://reshift.reshiftsecurity.com/',
-            required: false
-        });
-        parser.addArgument( [ '-s', '--timeoutSeconds' ], { 
-            help: 'Optional timeout in seconds, default ' + detaultTimeoutSeconds.toString(),
             required: false
         });
         parser.addArgument( [ '-l', '--language' ], { 
@@ -71,11 +67,6 @@ class Config {
         }
         if ( !this.endpoint || !validUrl.isUri(this.endpoint) ){
             console.error('Configuration Error: invalid endpoint; endpoint URL needs to be a valid http(s) url');
-            return false;
-        }
-        this.timeoutSeconds = Number.parseInt(this.timeoutSeconds);
-        if ( !this.timeoutSeconds || !Number.isInteger(this.timeoutSeconds) ){
-            console.error('Configuration Error: invalid timeoutSeconds value');
             return false;
         }
 

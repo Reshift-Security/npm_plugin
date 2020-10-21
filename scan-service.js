@@ -16,7 +16,7 @@ const packageInfo = require('./package.json');
 class ScanService {
     serviceHost
     serviceTimeoutMS
-    serviceRequestIntervalMS = 20000
+    serviceRequestIntervalMS = 7000
     requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version)
     logError = 'ERROR';
     logWarn = 'WARN';
@@ -111,11 +111,14 @@ class ScanService {
         }
     }
 
-    async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1) {
-        if ((this.serviceRequestIntervalMS * attemptCounter) > this.serviceTimeoutMS) {
-            console.error(util.format('TIMEOUT: Scan execution time exceeded timeout setting of %s', 
-                prettyMilliseconds(this.serviceTimeoutMS)));
-            return false;
+    async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
+        const executionTime = this.serviceRequestIntervalMS * attemptCounter;
+        if (executionTime > this.serviceTimeoutMS) {
+            if (overtimeNotice) {
+                this.log('Scan execution time is taking a little longer than expected...');
+                // Display notice only once
+                overtimeNotice = false;
+            }
         }
 
         assert(statusUrl, 'invalid status url');
@@ -149,7 +152,7 @@ class ScanService {
                         this.log(util.format('%s %s', scanStatus, statusResponse.scanMessage));
                     }
                     await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
-                    return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1);
+                    return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1, overtimeNotice);
             }
         }
 

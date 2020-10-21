@@ -20,7 +20,7 @@ async function runScan(configuration) {
     const meta = await gitInstance.branchInfo();
     meta.commitHash = await gitInstance.commitHash();
     var branch = meta.remotes
-    if (!!!branch) {
+    if (!branch) {
        branch = meta.local
        console.warn('WARN: Unable to get project git state. Project is either in a detached state or our of sync with remote.');
     }
