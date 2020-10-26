@@ -45,10 +45,4 @@ describe("Test Configuration", () => {
         var newConfig = new config.Config(invalidConfig);
         expect(newConfig.isValid()).toEqual(true);
     });
-
-    test("it should be an invalid configuration with invalid timeout value", () => {
-        const invalidConfig = { 'token': 'sometoken', 'timeoutSeconds': 'abc' };
-        var newConfig = new config.Config(invalidConfig);
-        expect(newConfig.isValid()).toEqual(false);
-    });
 });
