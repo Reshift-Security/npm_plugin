@@ -115,7 +115,7 @@ class ScanService {
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
             if (overtimeNotice) {
-                this.log('Scan execution time is taking a little longer than expected...');
+                this.log('Scan is still running. Execution time is taking a little longer than expected...');
                 // Display notice only once
                 overtimeNotice = false;
             }
