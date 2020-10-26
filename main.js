@@ -19,12 +19,12 @@ async function runScan(configuration) {
     const repoInfo = await gitInstance.getRepositoryInfo();
     const meta = await gitInstance.branchInfo();
     meta.commitHash = await gitInstance.commitHash();
-    var branch = meta.remotes
+    var gitStatus = await gitInstance.getGitStatus();
+    var branch = gitStatus.tracking
     if (!branch) {
        branch = meta.local
-       console.warn('WARN: Unable to get project git state. Project is either in a detached state or our of sync with remote.');
+       console.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
     }
-    var gitStatus = await gitInstance.getGitStatus();
     if (!gitStatus.isClean()) {
         console.warn('WARN: Git project seems to have local changes or is not clean. Local changes will not be scanned.');
     }
