@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const util = require('util');
 /**
  * commit hash: git rev-parse HEAD
  * current branch: git branch -vv
@@ -16,10 +17,13 @@ class Git{
                 if( err ){ reject(err); } 
                 else { resolve(summary); }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {
+            console.error(util.format("Unable to get git branch info: %s", error.message));
+        });
         const branchResult = await branchPromise;
         let info = {};
-        if (branchResult.current in branchResult.branches){
+        if (branchResult && branchResult.current in branchResult.branches){
             const matches = branchResult.branches[branchResult.current].label.match(/\[(.*)\]/);
             if( matches && matches.length >= 2 ){
                 info['remotes'] = matches[1];
@@ -35,7 +39,10 @@ class Git{
                 if( err ){ reject(err); } 
                 else { resolve(summary); }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {
+            console.error(util.format("Unable to get git commit info: %s", error.message));
+        });
 
         return await revParse;
     }
@@ -48,7 +55,10 @@ class Git{
                     resolve(require("git-url-parse")(data.toString().replace('\n','')));
                 }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {
+            console.error(util.format("Unable to get git repository info: %s", error.message));
+        });
 
         return await uriParse;
     }
@@ -61,7 +71,10 @@ class Git{
                     resolve(data);
                 }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {
+            console.error(util.format("Unable to get git status info: %s", error.message));
+        });
 
         return await gitStatus;
     }

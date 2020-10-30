@@ -14,13 +14,6 @@ const prettyMilliseconds = require('pretty-ms');
 const packageInfo = require('./package.json');
 
 class ScanService {
-    serviceHost
-    serviceTimeoutMS
-    serviceRequestIntervalMS = 7000
-    requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version)
-    logError = 'ERROR';
-    logWarn = 'WARN';
-
     constructor(host, timeoutSeconds, language){
         assert(validUrl.isUri(host), 'invalid host for scan service');
         this.serviceHost = host;
@@ -31,6 +24,10 @@ class ScanService {
             // TODO: look into making this more dynamic (auto-detect) if possible
             this.language = 'javascript';
         }
+        this.serviceRequestIntervalMS=7000;
+        this.requester_info=util.format('%s:%s', packageInfo.name, packageInfo.version);
+        this.logError='ERROR';
+        this.logWarn='WARN';
     }
 
     log(message, levelPrefix = 'INFO') {
@@ -58,24 +55,27 @@ class ScanService {
                 var isFailed = false;
                 var responseCode = 1;
                 if (error) {
-                    console.error(error);
+                    console.error("Unable to perform request to reshift server.");
+                    responseCode=521
+                    userMessage=util.format("Connection refused: %s", this.serviceHost)
                     isFailed = true;
-                }
-                if (response && response.statusCode >= 300) {
-                    isFailed = true;
-                    responseCode = response.statusCode;
-                }
-
-                var jsonBody = {};
-                var userMessage = response.statusMessage;
-                try {
-                    jsonBody = JSON.parse(body);
-                    if (jsonBody.scanMessage) {
-                        userMessage = jsonBody.scanMessage;
+                } else {
+                    if (response && response.statusCode >= 300) {
+                        isFailed = true;
+                        responseCode = response.statusCode;
                     }
-                } catch(e) {
-                    jsonBody = {};
-                    userMessage = response.statusMessage;
+
+                    var jsonBody = {};
+                    var userMessage = response.statusMessage;
+                    try {
+                        jsonBody = JSON.parse(body);
+                        if (jsonBody.scanMessage) {
+                            userMessage = jsonBody.scanMessage;
+                        }
+                    } catch(e) {
+                        jsonBody = {};
+                        userMessage = response.statusMessage;
+                    }
                 }
                 if (isFailed) {
                     console.error(util.format('ERROR <%s> %s', responseCode, userMessage));

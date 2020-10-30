@@ -14,13 +14,26 @@ async function runScan(configuration) {
         exit(1);
     }
 
+    const no_git_error = 'ERROR: Unable to retrieve Git project information. Either git is not installed or project is not a git directory.';
     // lets get the git information for this project folder
     const gitInstance = new git.Git(configuration.projectDir);
     const repoInfo = await gitInstance.getRepositoryInfo();
+    if (!repoInfo) {
+        console.error(no_git_error);
+        exit(1);
+    }
     const meta = await gitInstance.branchInfo();
+    if (!meta) {
+        console.error(no_git_error);
+        exit(1);
+    }
     meta.commitHash = await gitInstance.commitHash();
     var gitStatus = await gitInstance.getGitStatus();
-    var branch = gitStatus.tracking
+    var branch = gitStatus ? gitStatus.tracking : null;
+    if (!gitStatus) {
+        console.error(no_git_error);
+        exit(1);
+    }
     if (!branch) {
        branch = meta.local
        console.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
