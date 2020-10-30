@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const util = require('util');
 /**
  * commit hash: git rev-parse HEAD
  * current branch: git branch -vv
@@ -18,7 +19,7 @@ class Git{
             });
         }.bind(this))
         .catch(error => {
-            console.error("Unable to get git branch info")
+            console.error(util.format("Unable to get git branch info: %s", error.message));
         });
         const branchResult = await branchPromise;
         let info = {};
@@ -40,7 +41,7 @@ class Git{
             });
         }.bind(this))
         .catch(error => {
-            console.error("Unable to get git commit info")
+            console.error(util.format("Unable to get git commit info: %s", error.message));
         });
 
         return await revParse;
@@ -56,7 +57,7 @@ class Git{
             });
         }.bind(this))
         .catch(error => {
-            console.error("Unable to get git repository info")
+            console.error(util.format("Unable to get git repository info: %s", error.message));
         });
 
         return await uriParse;
@@ -72,7 +73,7 @@ class Git{
             });
         }.bind(this))
         .catch(error => {
-            console.error("Unable to get git status info")
+            console.error(util.format("Unable to get git status info: %s", error.message));
         });
 
         return await gitStatus;
