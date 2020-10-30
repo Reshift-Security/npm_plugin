@@ -17,7 +17,9 @@ class Git{
                 else { resolve(summary); }
             });
         }.bind(this))
-        .catch(error => {});
+        .catch(error => {
+            console.error("Unable to get git branch info")
+        });
         const branchResult = await branchPromise;
         let info = {};
         if (branchResult && branchResult.current in branchResult.branches){
@@ -37,7 +39,9 @@ class Git{
                 else { resolve(summary); }
             });
         }.bind(this))
-        .catch(error => {});
+        .catch(error => {
+            console.error("Unable to get git commit info")
+        });
 
         return await revParse;
     }
@@ -51,7 +55,9 @@ class Git{
                 }
             });
         }.bind(this))
-        .catch(error => {});
+        .catch(error => {
+            console.error("Unable to get git repository info")
+        });
 
         return await uriParse;
     }
@@ -65,7 +71,9 @@ class Git{
                 }
             });
         }.bind(this))
-        .catch(error => {});
+        .catch(error => {
+            console.error("Unable to get git status info")
+        });
 
         return await gitStatus;
     }
