@@ -20,7 +20,11 @@ async function runScan(configuration) {
     const meta = await gitInstance.branchInfo();
     meta.commitHash = await gitInstance.commitHash();
     var gitStatus = await gitInstance.getGitStatus();
-    var branch = gitStatus.tracking
+    var branch = gitStatus ? gitStatus.tracking : null;
+    if (!gitStatus) {
+        console.error('ERROR: Unable to retrieve Git project information. Either git is not installed or project is not a git directory.');
+        exit(1);
+    }
     if (!branch) {
        branch = meta.local
        console.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');

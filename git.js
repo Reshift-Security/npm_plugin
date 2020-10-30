@@ -16,10 +16,11 @@ class Git{
                 if( err ){ reject(err); } 
                 else { resolve(summary); }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {});
         const branchResult = await branchPromise;
         let info = {};
-        if (branchResult.current in branchResult.branches){
+        if (branchResult && branchResult.current in branchResult.branches){
             const matches = branchResult.branches[branchResult.current].label.match(/\[(.*)\]/);
             if( matches && matches.length >= 2 ){
                 info['remotes'] = matches[1];
@@ -35,7 +36,8 @@ class Git{
                 if( err ){ reject(err); } 
                 else { resolve(summary); }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {});
 
         return await revParse;
     }
@@ -48,7 +50,8 @@ class Git{
                     resolve(require("git-url-parse")(data.toString().replace('\n','')));
                 }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {});
 
         return await uriParse;
     }
@@ -61,7 +64,8 @@ class Git{
                     resolve(data);
                 }
             });
-        }.bind(this));
+        }.bind(this))
+        .catch(error => {});
 
         return await gitStatus;
     }
