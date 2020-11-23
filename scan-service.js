@@ -12,41 +12,24 @@ const util = require('util');
 const validUrl = require('valid-url');
 const prettyMilliseconds = require('pretty-ms');
 const packageInfo = require('./package.json');
+const logger = require('./logger.js');
 
 class ScanService {
-    constructor(host, timeoutSeconds, language){
+    constructor(host, timeoutSeconds, language, logLevel){
         assert(validUrl.isUri(host), 'invalid host for scan service');
         this.serviceHost = host;
         this.serviceTimeoutMS = timeoutSeconds * 1000;
         if (language) {
             this.language = language;
         } else {
-            // TODO: look into making this more dynamic (auto-detect) if possible
             this.language = 'javascript';
         }
-        this.serviceRequestIntervalMS=7000;
-        this.requester_info=util.format('%s:%s', packageInfo.name, packageInfo.version);
-        this.logError='ERROR';
-        this.logWarn='WARN';
-    }
-
-    log(message, levelPrefix = 'INFO') {
-        const userMessage = util.format('%s: %s %s', 
-            new Date().toISOString(),
-            levelPrefix,
-            message);
-        
-        switch(levelPrefix) {
-            case this.logError:
-                console.error(userMessage);
-                break;
-            case this.logWarn:
-                console.warn(userMessage);
-                break;
-            default:
-                console.log(userMessage);
-                break;
-        }
+        this.serviceRequestIntervalMS = 7000;
+        this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
+        this.log = new logger.Logger(logLevel, true, true);
+        this.log.info(util.format('Reshift Plugin version: %s', packageInfo.version));
+        this.log.debug(util.format('Current timezone: %s', Intl.DateTimeFormat().resolvedOptions().timeZone));
+        this.log.debug('Scanner service initialized');
     }
 
     sendRequest(requestOptions, parseJSON = true) {
@@ -55,7 +38,7 @@ class ScanService {
                 var isFailed = false;
                 var responseCode = 1;
                 if (error) {
-                    console.error("Unable to perform request to reshift server.");
+                    this.log.error("Unable to perform request to reshift server.");
                     responseCode=521
                     userMessage=util.format("Connection refused: %s", this.serviceHost)
                     isFailed = true;
@@ -78,7 +61,7 @@ class ScanService {
                     }
                 }
                 if (isFailed) {
-                    console.error(util.format('ERROR <%s> %s', responseCode, userMessage));
+                    this.log.error(util.format('ERROR <%s> %s', responseCode, userMessage));
                     resolve({});
                 } else if (parseJSON) {
                     resolve(jsonBody);
@@ -101,6 +84,7 @@ class ScanService {
     }
 
     printTotals(scanResponse) {
+        this.log.debug('Printing scan summary results');
         if (scanResponse.details) {
             console.log('================ Reshift Security report summary:');
             console.log(util.format('    Critical: %s', scanResponse.details.critical.total));
@@ -112,10 +96,11 @@ class ScanService {
     }
 
     async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
+        this.log.debug('Fetching scan status...');
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
             if (overtimeNotice) {
-                this.log('Scan is still running. Execution time is taking a little longer than expected...');
+                this.log.info('Scan is still running. Execution time is taking a little longer than expected...');
                 // Display notice only once
                 overtimeNotice = false;
             }
@@ -133,29 +118,32 @@ class ScanService {
 
         if (statusResponse.scanStatus) {
             const scanStatus = statusResponse.scanStatus;
+            this.log.debug(util.format('Latest scan status: %s', scanStatus));
             switch(scanStatus) {
                 case 'FAILED':
-                    this.log(statusResponse.scanMessage, this.logError);
+                    this.log.error(statusResponse.scanMessage);
                     return false;
                 case 'COMPLETE':
-                    this.log('Scan completed. Login to reshift dashboard to view report details.');
+                    this.log.info('Scan completed. Login to reshift dashboard to view report details.');
                     this.printTotals(statusResponse);
                     if (statusResponse.policyStatus === null) {
-                        this.log('Was not able to retrieve security report summary. Login to Reshift for report details.', this.logWarn);
+                        this.log.warn('Was not able to retrieve security report summary. Login to Reshift for report details.');
                     } else if (!statusResponse.policyStatus) {
-                        this.log('RESHIFT SECURITY: Project failed security gate thresholds.', this.logError);
+                        this.log.error('RESHIFT SECURITY: Project failed security gate thresholds.');
                         return false;
                     }
                     return true;
                 default:
                     if (scanStatus !== currentStatus) {
-                        this.log(util.format('%s %s', scanStatus, statusResponse.scanMessage));
+                        this.log.debug(util.format('Scan status changed %s', scanStatus));
+                        this.log.info(util.format('%s %s', scanStatus, statusResponse.scanMessage));
                     }
                     await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
                     return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1, overtimeNotice);
             }
         }
 
+        this.log.debug('Unable to get scan status.');
         return false
     }
 
@@ -164,6 +152,7 @@ class ScanService {
         assert(branch, 'invalid request body');
         assert(commitHash, 'invalid commit hash');
         assert(projectProviderUrl, 'project provider url required');
+        this.log.debug('Scan request validated');
 
         const requestUrl = new URL(urljoin(this.serviceHost, '/scan/'));
 
@@ -180,12 +169,13 @@ class ScanService {
             }
         );
 
+        this.log.debug('Sending scan request');
         const scanResponse = await this.sendRequest(scanRequestOptions);
         if(scanResponse.statusUrl) {
-            this.log('Scan initialized, executing...')
+            this.log.info('Scan initialized, executing...')
             return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
         } else {
-            this.log('Scan was not able to start successfully.', this.logError);
+            this.log.error('Scan was not able to start successfully.');
         }
         return false;
     }

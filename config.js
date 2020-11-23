@@ -4,13 +4,16 @@ const ArgumentParser = require('argparse').ArgumentParser;
 const fs = require("fs");
 const validUrl = require('valid-url');
 const packageInfo = require('./package.json');
-const detaultTimeoutSeconds = 600
+const util = require('util');
+const detaultTimeoutSeconds = 600;
+const logger = require('./logger.js');
 
 class Config {
     constructor(config = null){
         this.token = null;
         this.projectDir = null;
         this.endpoint = null;
+        this.logLevel = null;
 
         if(!config){
             // The caller did not pass in a configuration dictionary
@@ -26,7 +29,7 @@ class Config {
         this.projectDir = ('projectDir' in config && config['projectDir']) ? config['projectDir']: '.';
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
         this.timeoutSeconds = detaultTimeoutSeconds;
-        this.language = ('language' in config && config['language']) ? config['language']: null;
+        this.logLevel = ('logLevel' in config && config['logLevel']) ? config['logLevel']: 'info';
     }
 
     parseCLI(){
@@ -47,8 +50,8 @@ class Config {
             help: 'Optional host endpoint, default https://reshift.reshiftsecurity.com/',
             required: false
         });
-        parser.addArgument( [ '-l', '--language' ], { 
-            help: 'Optional project programming language, default auto-detect',
+        parser.addArgument( [ '-l', '--logLevel' ], { 
+            help: util.format('Optional plugin logging level (default: info). Options are: %s', logger.validLogLevels),
             required: false
         });
 
@@ -67,6 +70,10 @@ class Config {
         }
         if ( !this.endpoint || !validUrl.isUri(this.endpoint) ){
             console.error('Configuration Error: invalid endpoint; endpoint URL needs to be a valid http(s) url');
+            return false;
+        }
+        if (!logger.validLogLevels.includes(this.logLevel)) {
+            console.error(util.format('Configuration Error: invalid log level setting %s', this.logLevel));
             return false;
         }
 
