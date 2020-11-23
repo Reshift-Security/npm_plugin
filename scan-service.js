@@ -12,41 +12,25 @@ const util = require('util');
 const validUrl = require('valid-url');
 const prettyMilliseconds = require('pretty-ms');
 const packageInfo = require('./package.json');
+const logger = require('./logger.js');
 
 class ScanService {
-    constructor(host, timeoutSeconds, language){
+    constructor(host, timeoutSeconds, language, logLevel){
         assert(validUrl.isUri(host), 'invalid host for scan service');
         this.serviceHost = host;
         this.serviceTimeoutMS = timeoutSeconds * 1000;
         if (language) {
             this.language = language;
         } else {
-            // TODO: look into making this more dynamic (auto-detect) if possible
             this.language = 'javascript';
         }
-        this.serviceRequestIntervalMS=7000;
-        this.requester_info=util.format('%s:%s', packageInfo.name, packageInfo.version);
-        this.logError='ERROR';
-        this.logWarn='WARN';
+        this.serviceRequestIntervalMS = 7000;
+        this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
+        this.log = new logger.Logger(logLevel, true);
     }
 
-    log(message, levelPrefix = 'INFO') {
-        const userMessage = util.format('%s: %s %s', 
-            new Date().toISOString(),
-            levelPrefix,
-            message);
-        
-        switch(levelPrefix) {
-            case this.logError:
-                console.error(userMessage);
-                break;
-            case this.logWarn:
-                console.warn(userMessage);
-                break;
-            default:
-                console.log(userMessage);
-                break;
-        }
+    msgWithDate(message) {
+        return
     }
 
     sendRequest(requestOptions, parseJSON = true) {
@@ -115,7 +99,7 @@ class ScanService {
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
             if (overtimeNotice) {
-                this.log('Scan is still running. Execution time is taking a little longer than expected...');
+                this.log.info('Scan is still running. Execution time is taking a little longer than expected...');
                 // Display notice only once
                 overtimeNotice = false;
             }
@@ -135,21 +119,21 @@ class ScanService {
             const scanStatus = statusResponse.scanStatus;
             switch(scanStatus) {
                 case 'FAILED':
-                    this.log(statusResponse.scanMessage, this.logError);
+                    this.log.error(statusResponse.scanMessage);
                     return false;
                 case 'COMPLETE':
-                    this.log('Scan completed. Login to reshift dashboard to view report details.');
+                    this.log.info('Scan completed. Login to reshift dashboard to view report details.');
                     this.printTotals(statusResponse);
                     if (statusResponse.policyStatus === null) {
-                        this.log('Was not able to retrieve security report summary. Login to Reshift for report details.', this.logWarn);
+                        this.log.warn('Was not able to retrieve security report summary. Login to Reshift for report details.');
                     } else if (!statusResponse.policyStatus) {
-                        this.log('RESHIFT SECURITY: Project failed security gate thresholds.', this.logError);
+                        this.log.error('RESHIFT SECURITY: Project failed security gate thresholds.');
                         return false;
                     }
                     return true;
                 default:
                     if (scanStatus !== currentStatus) {
-                        this.log(util.format('%s %s', scanStatus, statusResponse.scanMessage));
+                        this.log.info(util.format('%s %s', scanStatus, statusResponse.scanMessage));
                     }
                     await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
                     return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1, overtimeNotice);
@@ -182,10 +166,10 @@ class ScanService {
 
         const scanResponse = await this.sendRequest(scanRequestOptions);
         if(scanResponse.statusUrl) {
-            this.log('Scan initialized, executing...')
+            this.log.info('Scan initialized, executing...')
             return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
         } else {
-            this.log('Scan was not able to start successfully.', this.logError);
+            this.log.error('Scan was not able to start successfully.');
         }
         return false;
     }
