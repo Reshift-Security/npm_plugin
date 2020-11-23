@@ -27,6 +27,7 @@ class ScanService {
         this.serviceRequestIntervalMS = 7000;
         this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
         this.log = new logger.Logger(logLevel, true, true);
+        this.log.info(util.format('Reshift Plugin version: %s', packageInfo.version));
         this.log.debug(util.format('Current timezone: %s', Intl.DateTimeFormat().resolvedOptions().timeZone));
         this.log.debug('Scanner service initialized');
     }
