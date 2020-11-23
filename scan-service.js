@@ -96,7 +96,7 @@ class ScanService {
     }
 
     async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
-        this.log.debug('Fetching scan status');
+        this.log.debug('Fetching scan status...');
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
             if (overtimeNotice) {
@@ -118,6 +118,7 @@ class ScanService {
 
         if (statusResponse.scanStatus) {
             const scanStatus = statusResponse.scanStatus;
+            this.log.debug(util.format('Latest scan status: %s', scanStatus));
             switch(scanStatus) {
                 case 'FAILED':
                     this.log.error(statusResponse.scanMessage);
@@ -142,6 +143,7 @@ class ScanService {
             }
         }
 
+        this.log.debug('Unable to get scan status.');
         return false
     }
 
