@@ -27,6 +27,7 @@ class ScanService {
         this.serviceRequestIntervalMS = 7000;
         this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
         this.log = new logger.Logger(logLevel, true, true);
+        this.log.debug(util.format('Current timezone: %s', Intl.DateTimeFormat().resolvedOptions().timeZone));
         this.log.debug('Scanner service initialized');
     }
 
@@ -94,6 +95,7 @@ class ScanService {
     }
 
     async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
+        this.log.debug('Fetching scan status');
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
             if (overtimeNotice) {

@@ -11,7 +11,7 @@ class Logger {
     getPrefixedMessage(message, prefix) {
         message = this.includeLevelPrefix ? util.format('%s: %s', prefix, message) : message;
         return this.includeDateTime ? 
-            util.format('%s %s: %s', new Date().toISOString(), prefix, message) : 
+            util.format('%s %s', new Date().toISOString(), prefix, message) : 
             message;
     }
 
