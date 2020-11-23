@@ -73,7 +73,7 @@ class Config {
             return false;
         }
         if (!logger.validLogLevels.includes(this.logLevel)) {
-            console.error(util.format('Configuration Error: Invlaid log level setting %s', this.logLevel));
+            console.error(util.format('Configuration Error: invalid log level setting %s', this.logLevel));
             return false;
         }
 

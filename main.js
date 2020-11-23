@@ -11,7 +11,7 @@ const logger = require('./logger.js');
 
 async function runScan(configuration) {
     if (!configuration.isValid()) {
-        console.error('Unable to procedd: Invalid configuration used for the reshift-plugin-npm')
+        console.error('Unable to proceed: Invalid configuration used for the reshift-plugin-npm')
         exit(1);
     }
     const log = new logger.Logger(configuration.logLevel);
