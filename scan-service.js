@@ -26,11 +26,8 @@ class ScanService {
         }
         this.serviceRequestIntervalMS = 7000;
         this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
-        this.log = new logger.Logger(logLevel, true);
-    }
-
-    msgWithDate(message) {
-        return
+        this.log = new logger.Logger(logLevel, true, true);
+        this.log.debug('Scanner service initialized');
     }
 
     sendRequest(requestOptions, parseJSON = true) {
@@ -39,7 +36,7 @@ class ScanService {
                 var isFailed = false;
                 var responseCode = 1;
                 if (error) {
-                    console.error("Unable to perform request to reshift server.");
+                    this.log.error("Unable to perform request to reshift server.");
                     responseCode=521
                     userMessage=util.format("Connection refused: %s", this.serviceHost)
                     isFailed = true;
@@ -62,7 +59,7 @@ class ScanService {
                     }
                 }
                 if (isFailed) {
-                    console.error(util.format('ERROR <%s> %s', responseCode, userMessage));
+                    this.log.error(util.format('ERROR <%s> %s', responseCode, userMessage));
                     resolve({});
                 } else if (parseJSON) {
                     resolve(jsonBody);
@@ -85,6 +82,7 @@ class ScanService {
     }
 
     printTotals(scanResponse) {
+        this.log.debug('Printing scan summary results');
         if (scanResponse.details) {
             console.log('================ Reshift Security report summary:');
             console.log(util.format('    Critical: %s', scanResponse.details.critical.total));
@@ -133,6 +131,7 @@ class ScanService {
                     return true;
                 default:
                     if (scanStatus !== currentStatus) {
+                        this.log.debug(util.format('Scan status changed %s', scanStatus));
                         this.log.info(util.format('%s %s', scanStatus, statusResponse.scanMessage));
                     }
                     await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
@@ -148,6 +147,7 @@ class ScanService {
         assert(branch, 'invalid request body');
         assert(commitHash, 'invalid commit hash');
         assert(projectProviderUrl, 'project provider url required');
+        this.log.debug('Scan request validated');
 
         const requestUrl = new URL(urljoin(this.serviceHost, '/scan/'));
 
@@ -164,6 +164,7 @@ class ScanService {
             }
         );
 
+        this.log.debug('Sending scan request');
         const scanResponse = await this.sendRequest(scanRequestOptions);
         if(scanResponse.statusUrl) {
             this.log.info('Scan initialized, executing...')
