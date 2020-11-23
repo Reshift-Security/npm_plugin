@@ -1,10 +1,14 @@
 # This workflow will run tests using node and then publish a package to NPM and GitHub Packages when a release is created
 
-name: Node.js Package
+name: Build and Publish to NPM
 
 on:
   release:
     types: [created]
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
 
 jobs:
   build:
@@ -16,18 +20,19 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm test
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'created'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 15
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm publish --access=public
