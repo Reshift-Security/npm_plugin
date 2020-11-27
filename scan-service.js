@@ -61,7 +61,7 @@ class ScanService {
                     }
                 }
                 if (isFailed) {
-                    this.log.error(util.format('ERROR <%s> %s', responseCode, userMessage));
+                    this.log.error(util.format('<%s> %s', responseCode, userMessage));
                     resolve({});
                 } else if (parseJSON) {
                     resolve(jsonBody);
