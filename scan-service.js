@@ -61,7 +61,7 @@ class ScanService {
                     }
                 }
                 if (isFailed) {
-                    this.log.error(util.format('ERROR <%s> %s', responseCode, userMessage));
+                    this.log.error(util.format('<%s> %s', responseCode, userMessage));
                     resolve({});
                 } else if (parseJSON) {
                     resolve(jsonBody);
@@ -175,7 +175,7 @@ class ScanService {
             this.log.info('Scan initialized, executing...')
             return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
         } else {
-            this.log.error('Scan was not able to start successfully.');
+            this.log.error(util.format('Scan was not able to start successfully. %s', scanResponse.scanMessage));
         }
         return false;
     }
