@@ -93,6 +93,9 @@ class ScanService {
             console.log(util.format('    Low:      %s', scanResponse.details.low.total));
             console.log('================');
         }
+        if (scanResponse.reportUrl) {
+            console.log(util.format('View full report: %s', scanResponse.reportUrl));
+        }
     }
 
     async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
