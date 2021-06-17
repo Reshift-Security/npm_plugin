@@ -14,6 +14,7 @@ class Config {
         this.projectDir = null;
         this.endpoint = null;
         this.logLevel = null;
+        this.nonblocking = null;
 
         if(!config){
             // The caller did not pass in a configuration dictionary
@@ -30,6 +31,7 @@ class Config {
         this.endpoint = ('endpoint' in config && config['endpoint']) ? config['endpoint']: 'https://reshift.reshiftsecurity.com/';
         this.timeoutSeconds = detaultTimeoutSeconds;
         this.logLevel = ('logLevel' in config && config['logLevel']) ? config['logLevel']: 'info';
+        this.nonblocking = 'nonblocking' in config && config['nonblocking'] ? config['nonblocking'] > 0: false;
     }
 
     parseCLI(){
@@ -52,6 +54,11 @@ class Config {
         });
         parser.addArgument( [ '-l', '--logLevel' ], { 
             help: util.format('Optional plugin logging level (default: info). Options are: %s', logger.validLogLevels),
+            required: false
+        });
+        parser.addArgument( [ '-n', '--nonblocking' ], {
+            type: 'int',
+            help: 'Optional non-blocking scan. Will return immediately once scan is initialized.',
             required: false
         });
 
