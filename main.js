@@ -62,7 +62,8 @@ async function runScan(configuration) {
         configuration.token,
         projectProviderUrl,
         branch,
-        meta.commitHash
+        meta.commitHash,
+        configuration.nonblocking
     );
     var scanTimeMs = new Date() - start;
     log.info(util.format("Finished in %s", prettyMilliseconds(scanTimeMs)));

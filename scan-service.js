@@ -150,7 +150,7 @@ class ScanService {
         return false
     }
 
-    async executeScan(token, projectProviderUrl, branch, commitHash) {
+    async executeScan(token, projectProviderUrl, branch, commitHash, nonblocking) {
         assert(token, 'invalid token');
         assert(branch, 'invalid request body');
         assert(commitHash, 'invalid commit hash');
@@ -175,6 +175,11 @@ class ScanService {
         this.log.debug('Sending scan request');
         const scanResponse = await this.sendRequest(scanRequestOptions);
         if(scanResponse.statusUrl) {
+            if (!!nonblocking)
+            {
+                this.log.info('Scan initialized, login to Reshift for report details.');
+                return true;
+            }
             this.log.info('Scan initialized, executing...')
             return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
         } else {
