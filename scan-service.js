@@ -98,7 +98,7 @@ class ScanService {
         }
     }
 
-    async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true) {
+    async getScanStatus(statusUrl, token, currentStatus, attemptCounter = 1, overtimeNotice = true, tail = true) {
         this.log.debug('Fetching scan status...');
         const executionTime = this.serviceRequestIntervalMS * attemptCounter;
         if (executionTime > this.serviceTimeoutMS) {
@@ -141,8 +141,11 @@ class ScanService {
                         this.log.debug(util.format('Scan status changed %s', scanStatus));
                         this.log.info(util.format('%s %s', scanStatus, statusResponse.scanMessage));
                     }
-                    await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
-                    return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1, overtimeNotice);
+                    if (tail) {
+                        await new Promise(r => setTimeout(r, this.serviceRequestIntervalMS));
+                        return await this.getScanStatus(statusUrl, token, scanStatus, attemptCounter+1, overtimeNotice);
+                    }
+                    return true;
             }
         }
 
@@ -178,7 +181,8 @@ class ScanService {
             if (!!nonblocking)
             {
                 this.log.info('Scan initialized, login to Reshift for report details.');
-                return true;
+                // get the scan status with no tailing to exit right away
+                return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus, 1, false, false);
             }
             this.log.info('Scan initialized, executing...')
             return await this.getScanStatus(scanResponse.statusUrl, token, scanResponse.scanStatus);
