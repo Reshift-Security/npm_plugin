@@ -40,8 +40,8 @@ async function runScan(configuration) {
             exit(1);
         }
         if (!branch) {
-        branch = meta.local
-        log.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
+            branch = meta.local
+            log.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
         }
         if (!gitStatus.isClean()) {
             log.warn('WARN: Git project seems to have local changes or is not clean. Local changes will not be scanned.');
