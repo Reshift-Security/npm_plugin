@@ -30,22 +30,26 @@ async function runScan(configuration) {
         exit(1);
     }
     meta.commitHash = await gitInstance.commitHash();
+    var commit = configuration.commit ? configuration.commit : meta.commitHash;
     var gitStatus = await gitInstance.getGitStatus();
-    var branch = gitStatus ? gitStatus.tracking : null;
-    if (!gitStatus) {
-        log.error(no_git_error);
-        exit(1);
-    }
+    var branch = configuration.branch;
     if (!branch) {
-       branch = meta.local
-       log.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
-    }
-    if (!gitStatus.isClean()) {
-        log.warn('WARN: Git project seems to have local changes or is not clean. Local changes will not be scanned.');
-    }
-    if (gitStatus.ahead > 0) {
-        log.error('ERROR: Git project seems to be ahead of remote. Make sure local copy is in sync with remote.');
-        exit(1);
+        branch = gitStatus ? gitStatus.tracking : null;
+        if (!gitStatus) {
+            log.error(no_git_error);
+            exit(1);
+        }
+        if (!branch) {
+        branch = meta.local
+        log.warn('WARN: Unable to get project git state. Project is either in a detached state or out of sync with remote.');
+        }
+        if (!gitStatus.isClean()) {
+            log.warn('WARN: Git project seems to have local changes or is not clean. Local changes will not be scanned.');
+        }
+        if (gitStatus.ahead > 0) {
+            log.error('ERROR: Git project seems to be ahead of remote. Make sure local copy is in sync with remote.');
+            exit(1);
+        }
     }
     var projectProviderUrl = repoInfo.href;
     
@@ -62,7 +66,7 @@ async function runScan(configuration) {
         configuration.token,
         projectProviderUrl,
         branch,
-        meta.commitHash,
+        commit,
         configuration.nonblocking
     );
     var scanTimeMs = new Date() - start;

@@ -15,6 +15,8 @@ class Config {
         this.endpoint = null;
         this.logLevel = null;
         this.nonblocking = null;
+        this.branch = null;
+        this.commit = null;
 
         if(!config){
             // The caller did not pass in a configuration dictionary
@@ -32,6 +34,8 @@ class Config {
         this.timeoutSeconds = detaultTimeoutSeconds;
         this.logLevel = ('logLevel' in config && config['logLevel']) ? config['logLevel']: 'info';
         this.nonblocking = 'nonblocking' in config && config['nonblocking'] ? config['nonblocking'] > 0: false;
+        this.branch = ('branch' in config && config['branch']) ? config['branch']: null;
+        this.commit = ('commit' in config && config['commit']) ? config['commit']: null;
     }
 
     parseCLI(){
@@ -59,6 +63,14 @@ class Config {
         parser.addArgument( [ '-n', '--nonblocking' ], {
             type: 'int',
             help: 'Optional non-blocking scan. Will return immediately once scan is initialized.',
+            required: false
+        });
+        parser.addArgument( [ '-b', '--branch' ], {
+            help: 'Optional git branch name. (default: automatically detected)',
+            required: false
+        });
+        parser.addArgument( [ '-c', '--commit' ], {
+            help: 'Optional git commit hash. (default: automatically detected)',
             required: false
         });
 
