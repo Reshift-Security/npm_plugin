@@ -7,6 +7,8 @@ const packageInfo = require('./package.json');
 const util = require('util');
 const detaultTimeoutSeconds = 600;
 const logger = require('./logger.js');
+const validLanguages = ['javascript', 'csharp']
+const defaultScanLanguage = 'javascript'
 
 class Config {
     constructor(config = null){
@@ -36,13 +38,14 @@ class Config {
         this.nonblocking = 'nonblocking' in config && config['nonblocking'] ? config['nonblocking'] > 0: false;
         this.branch = ('branch' in config && config['branch']) ? config['branch']: null;
         this.commit = ('commit' in config && config['commit']) ? config['commit']: null;
+        this.scanLanguage = ('scanLanguage' in config && config['scanLanguage']) ? config['scanLanguage']: defaultScanLanguage;
     }
 
     parseCLI(){
         const parser = new ArgumentParser({
             version: packageInfo.version,
             addHelp: true,
-            description: 'NPM security plugin'
+            description: 'Reshift Security Scan'
         });
         parser.addArgument( [ '-t', '--token' ], {
             help: 'Reshift Token MUST be specified to run a scan', 
@@ -73,6 +76,10 @@ class Config {
             help: 'Optional git commit hash. (default: automatically detected)',
             required: false
         });
+        parser.addArgument( [ '-s', '--scanLanguage' ], {
+            help: util.format('Optional project language. (default: %s). Options are: %s', defaultScanLanguage, validLanguages),
+            required: false
+        });
 
         const args = parser.parseArgs();
         this.parseCommon(args);
@@ -93,6 +100,10 @@ class Config {
         }
         if (!logger.validLogLevels.includes(this.logLevel)) {
             console.error(util.format('Configuration Error: invalid log level setting %s', this.logLevel));
+            return false;
+        }
+        if (!validLanguages.includes(this.scanLanguage)) {
+            console.error(util.format('Configuration Error: invalid scan language selected %s', this.scanLanguage));
             return false;
         }
 

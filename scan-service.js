@@ -19,17 +19,13 @@ class ScanService {
         assert(validUrl.isUri(host), 'invalid host for scan service');
         this.serviceHost = host;
         this.serviceTimeoutMS = timeoutSeconds * 1000;
-        if (language) {
-            this.language = language;
-        } else {
-            this.language = 'javascript';
-        }
+        this.language = language;
         this.serviceRequestIntervalMS = 7000;
         this.requester_info = util.format('%s:%s', packageInfo.name, packageInfo.version);
         this.log = new logger.Logger(logLevel, true, true);
-        this.log.info(util.format('Reshift Plugin version: %s', packageInfo.version));
+        this.log.info(util.format('Reshift CLI version: %s', packageInfo.version));
         this.log.debug(util.format('Current timezone: %s', Intl.DateTimeFormat().resolvedOptions().timeZone));
-        this.log.debug('Scanner service initialized');
+        this.log.debug(util.format('Scanner service initialized for %s', language));
     }
 
     sendRequest(requestOptions, parseJSON = true) {
