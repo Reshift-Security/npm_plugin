@@ -38,3 +38,10 @@ jobs:
       - run: npm publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPMJS_TOKEN}}
+      - run: npx pkg . -t node14-linux-x64 -o bin/reshift-security-scan
+      - run: npx pkg . -t node14-macos-x64 -o bin/reshift-security-scan-macos
+      - run: npx pkg . -t node14-win-x64 -o bin/reshift-security-scan-win.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cli-binaries
+          path: bin/reshift-security-scan*
