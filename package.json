@@ -1,6 +1,6 @@
 {
     "name": "@reshiftsecurity/reshift-plugin-npm",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Security vulnerability scanner",
     "license": "MIT",
     "repository": "https://github.com/softwaresecured/npm_plugin",
