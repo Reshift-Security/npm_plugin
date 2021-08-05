@@ -41,7 +41,11 @@ jobs:
       - run: npx pkg . -t node14-linux-x64 -o bin/reshift-security-scan
       - run: npx pkg . -t node14-macos-x64 -o bin/reshift-security-scan-macos
       - run: npx pkg . -t node14-win-x64 -o bin/reshift-security-scan-win.exe
-      - uses: actions/upload-artifact@v2
+      - name: Upload Release Assets
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: cli-binaries
-          path: bin/reshift-security-scan*
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: bin
