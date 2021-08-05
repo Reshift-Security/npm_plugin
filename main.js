@@ -60,7 +60,7 @@ async function runScan(configuration) {
     const scannerService = new scanService.ScanService(
         configuration.endpoint,
         configuration.timeoutSeconds,
-        'javascript',
+        configuration.scanLanguage,
         configuration.logLevel);
     const scanSuccess = await scannerService.executeScan(
         configuration.token,
