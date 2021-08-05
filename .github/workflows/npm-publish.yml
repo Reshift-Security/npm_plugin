@@ -29,6 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'created'
     steps:
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
@@ -47,5 +52,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_id: ${{ steps.create_release.outputs.id }}
+          release_id: ${{ steps.get_release.outputs.id }}
           assets_path: bin
