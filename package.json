@@ -43,7 +43,7 @@
         "md5": "^2.3.0",
         "pretty-ms": "^7.0.1",
         "request": "^2.88.2",
-        "simple-git": "^2.40.0",
+        "simple-git": "^3.5.0",
         "tmp": "0.1.0",
         "url-join": "4.0.1",
         "valid-url": "^1.0.9"
